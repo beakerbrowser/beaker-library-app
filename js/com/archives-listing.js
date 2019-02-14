@@ -29,11 +29,11 @@ class ArchivesListing extends Table {
   get columns () {
     return [
       {id: 'favicon', width: 30, renderer: 'renderRowFavicon'},
-      {id: 'title', label: 'Title', stretch: true, renderer: 'renderRowTitle'},
-      {id: 'owner', label: 'Owner', width: 100, renderer: 'renderRowOwner'},
-      {id: 'peers', label: 'Peers', width: 100},
-      {id: 'last-updated', label: 'Last updated', width: 150, renderer: 'renderRowLastUpdated'},
-      {id: 'size', label: 'Size', width: 150, renderer: 'renderRowSize'},
+      {id: 'title', label: 'Title', flex: 3, renderer: 'renderRowTitle'},
+      {id: 'owner', label: 'Owner', flex: 1, renderer: 'renderRowOwner'},
+      {id: 'peers', label: 'Peers', flex: 1, renderer: 'renderPeers'},
+      {id: 'last-updated', label: 'Last updated', flex: 1, renderer: 'renderRowLastUpdated'},
+      {id: 'size', label: 'Size', flex: 1, renderer: 'renderRowSize'},
       {id: 'buttons', label: '', width: 65, renderer: 'renderRowButtons'}
     ]
   }
@@ -120,9 +120,13 @@ class ArchivesListing extends Table {
     return getOwner(row)
   }
 
+  renderPeers (row) {
+    return row.peers || '--'
+  }
+
   renderRowLastUpdated (row) {
     // TODO switch to Intl.RelativeTimeFormat when Beaker reaches Chrome 71
-    return timeDifference(row.mtime)
+    return row.mtime ? timeDifference(row.mtime) : '--'
   }
 
   renderRowSize (row) {

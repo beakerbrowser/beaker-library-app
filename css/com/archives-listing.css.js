@@ -12,6 +12,10 @@ ${commonCSS}
   position: relative; /* to position the select-check */
 }
 
+.row .col:not(.title) {
+  color: rgba(0,0,0,.5);
+}
+
 .favicon {
   width: 20px;
   height: 20px;
