@@ -11,21 +11,27 @@ class Sidebar extends LitElement {
 
   render() {
     return html`
+      <link rel="stylesheet" href="/vendor/beaker-app-stdlib/css/fontawesome.css">
       <div class="brand">
         <img src="/img/icon.png">
         <span>Your Library</span>
       </div>
       <div class="nav">
-        ${this.renderNavItem('all', 'All')}
-        ${this.renderNavItem('owned', 'Created by you')}
-        ${this.renderNavItem('trash', 'Trash')}
+        ${this.renderNavItem('all', 'fas fa-fw fa-asterisk', 'All')}
+        ${this.renderNavItem('following', 'fas fa-fw fa-rss', 'Following')}
+        ${this.renderNavItem('owned', 'fas fa-fw fa-pencil-alt', 'Created by you')}
+        ${this.renderNavItem('trash', 'fas fa-fw fa-trash', 'Trash')}
       </div>
     `
   }
 
-  renderNavItem (id, label) {
+  renderNavItem (id, icon, label) {
     const cls = classMap({active: this.currentCategory === id})
-    return html`<a class="${cls}" @click=${e => this.onClickNavItem(e, id)}>${label}</a>`
+    return html`
+      <a class="${cls}" @click=${e => this.onClickNavItem(e, id)}>
+        <i class="${icon}"></i>
+        ${label}
+      </a>`
   }
 
   onClickNavItem (e, id) {

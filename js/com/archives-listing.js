@@ -1,9 +1,11 @@
 import {html} from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-element.js'
-import {library} from '../tmp-beaker.js'
+import {library, profiles} from '../tmp-beaker.js'
+import {followgraph} from '../tmp-unwalled-garden.js'
 import bytes from '/vendor/beaker-app-stdlib/vendor/bytes/index.js'
 import {pluralize} from '/vendor/beaker-app-stdlib/js/strings.js'
 import {Table} from '/vendor/beaker-app-stdlib/js/com/table.js'
 import * as contextMenu from '/vendor/beaker-app-stdlib/js/com/context-menu.js'
+import * as toast from '/vendor/beaker-app-stdlib/js/com/toast.js'
 import {writeToClipboard} from '/vendor/beaker-app-stdlib/js/clipboard.js'
 import tableCSS from '/vendor/beaker-app-stdlib/css/com/table.css.js'
 import archivesListingCSS from '../../css/com/archives-listing.css.js'
@@ -12,6 +14,7 @@ class ArchivesListing extends Table {
   static get properties() {
     return { 
       rows: {type: Array},
+      currentCategory: {type: String, attribute: 'current-category'},
       selectedRows: {type: Object},
       searchQuery: {attribute: 'search-query', reflect: true}
     }
@@ -76,11 +79,41 @@ class ArchivesListing extends Table {
     return row.url
   }
 
+  attributeChangedCallback (name, oldval, newval) {
+    super.attributeChangedCallback(name, oldval, newval)
+    if (name === 'current-category' && newval) {
+      // trigger a load when we change categories
+      this.load()
+    }
+  }
+
   // data management
   // =
 
   async load () {
-    this.archives = await library.list({filter: {saved: true}})
+    try {
+      if (this.currentCategory === 'following') {
+        let user = await profiles.getCurrentUser()
+        let follows = await followgraph.listFollows(user.url)
+        this.archives = await Promise.all(follows.map(follow => library.get(follow.url)))
+      } else {
+        let filters = {}
+        if (this.currentCategory === 'all') {
+          filters.saved = true
+        } else if (this.currentCategory === 'owned') {
+          filters.owner = true
+          filters.saved = true
+        } else if (this.currentCategory === 'trash') {
+          filters.owner = true
+          filters.saved = false
+        }
+        this.archives = await library.list({filters})
+      }
+    } catch (e) {
+      console.error('Error while loading archives')
+      console.error(e)
+      toast.create('Failed to load archives', 'error')
+    }
     this.requestUpdate()
   }
 
