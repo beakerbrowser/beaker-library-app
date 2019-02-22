@@ -27,5 +27,9 @@ const cssStr = css`
 .nav a.active {
   font-weight: bold;
 }
+.fa-fw {
+  margin-right: 3px;
+  margin-left: -3px;
+}
 `
 export default cssStr
