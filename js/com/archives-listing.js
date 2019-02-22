@@ -109,6 +109,7 @@ class ArchivesListing extends Table {
         }
         this.archives = await library.list({filters})
       }
+      console.log(this.archives)
     } catch (e) {
       console.error('Error while loading archives')
       console.error(e)
@@ -209,7 +210,7 @@ class ArchivesListing extends Table {
       {icon: 'fa fa-link', label: 'Copy URL', click: () => writeToClipboard(row.url)},
       {icon: 'code', label: 'View source', click: () => window.open(`beaker://editor/${row.url}`)}
     ]
-    if (row.userSettings.isSaved) {
+    if (row.saved) {
       items.push({icon: 'fas fa-trash', label: 'Move to trash', click: () => this.emit('move-to-trash', {key: row.key})})
     } else {
       items.push({icon: 'fa fa-undo', label: 'Restore from trash', click: () => this.emit('restore-from-trash', {key: row.key})})
