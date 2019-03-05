@@ -8,12 +8,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/pfrazee/beaker-library-app.git"
+    "url": "git+https://github.com/beakerbrowser/beaker-library-app.git"
   },
   "author": "Paul Frazee <pfrazee@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/pfrazee/beaker-library-app/issues"
+    "url": "https://github.com/beakerbrowser/beaker-library-app/issues"
   },
-  "homepage": "https://github.com/pfrazee/beaker-library-app#readme"
+  "homepage": "https://github.com/beakerbrowser/beaker-library-app#readme"
 }
