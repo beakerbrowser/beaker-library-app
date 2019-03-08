@@ -9,7 +9,7 @@ class Archives extends LitElement {
     return {
       currentCategory: {type: String},
       searchQuery: {type: String},
-      selectedKeys: {type: Array}
+      selectedUrls: {type: Array}
     }
   }
 
@@ -17,11 +17,11 @@ class Archives extends LitElement {
     super()
     this.searchQuery = ''
     this.currentCategory = 'all'
-    this.selectedKeys = []
+    this.selectedUrls = []
   }
 
   render() {
-    var hasSelection = this.selectedKeys.length > 0
+    var hasSelection = this.selectedUrls.length > 0
     return html`
       <nav>
         <library-sidebar
@@ -53,7 +53,7 @@ class Archives extends LitElement {
   }
 
   onSelectionChanged (e) {
-    this.selectedKeys = Object.keys(this.shadowRoot.querySelector('library-archives-listing').selectedKeys)
+    this.selectedUrls = Object.keys(this.shadowRoot.querySelector('library-archives-listing').selectedUrls)
   }
 }
 Archives.styles = css`

@@ -64,12 +64,12 @@ class ArchivesListing extends Table {
     return '/vendor/beaker-app-stdlib/css/fontawesome.css'
   }
 
-  get selectedKeys () {
+  get selectedUrls () {
     return Object.entries(this.selectedRows).filter(([key, b]) => b).map(([key]) => key)
   }
 
   isRowSelected (row) {
-    return this.selectedRows[row.key]
+    return this.selectedRows[row.url]
   }
 
   getRowHref (row) {
@@ -163,7 +163,7 @@ class ArchivesListing extends Table {
   renderRowButtons (row) {
     return html`
       <div>
-        <button class="btn transparent trash-btn" @click=${e => this.emit('move-to-trash', {key: row.key})}><i class="fas fa-trash"></i></button>
+        <button class="btn transparent trash-btn" @click=${e => this.emit('move-to-trash', {url: row.url})}><i class="fas fa-trash"></i></button>
         <button class="btn transparent context-btn" @click=${e => this.onClickRowMenu(e, row)}><i class="fa fa-ellipsis-v"></i></button>
         <span class="select-check" @click=${e => this.onSelectRow(e, row)}><i class="fa fa-check-circle"></i></span>
       </div>
@@ -181,7 +181,7 @@ class ArchivesListing extends Table {
     e.preventDefault()
     e.stopPropagation()
 
-    this.selectedRows[row.key] = !this.selectedRows[row.key]
+    this.selectedRows[row.url] = !this.selectedRows[row.url]
     this.requestUpdate()
     this.dispatchEvent(new Event('selection-changed'))
   }
@@ -209,10 +209,10 @@ class ArchivesListing extends Table {
       {icon: 'code', label: 'View source', click: () => window.open(`beaker://editor/${row.url}`)}
     ]
     if (row.saved) {
-      items.push({icon: 'fas fa-trash', label: 'Move to trash', click: () => this.emit('move-to-trash', {key: row.key})})
+      items.push({icon: 'fas fa-trash', label: 'Move to trash', click: () => this.emit('move-to-trash', {url: row.url})})
     } else {
-      items.push({icon: 'fa fa-undo', label: 'Restore from trash', click: () => this.emit('restore-from-trash', {key: row.key})})
-      items.push({icon: 'fa fa-times-circle', label: 'Delete permanently', click: () => this.emit('delete-permanently', {key: row.key})})
+      items.push({icon: 'fa fa-undo', label: 'Restore from trash', click: () => this.emit('restore-from-trash', {url: row.url})})
+      items.push({icon: 'fa fa-times-circle', label: 'Delete permanently', click: () => this.emit('delete-permanently', {url: row.url})})
     }
     await contextMenu.create(Object.assign({x, y, items, fontAwesomeCSSUrl: '/vendor/beaker-app-stdlib/css/fontawesome.css'}, opts))
   }

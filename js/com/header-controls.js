@@ -47,14 +47,14 @@ class HeaderControls extends LitElement {
   renderSelectionActions () {
     return html`
       <div class="actions">
-        <button class="btn transparent thick" onclick=${this.doEmit('select-all')}>
+        <button class="btn transparent thick" @click=${this.doEmit('select-all')}>
           Select all
         </button>
         |
-        <button class="btn transparent thick" onclick=${this.doEmit('deselect-all')}>
+        <button class="btn transparent thick" @click=${this.doEmit('deselect-all')}>
           Deselect all
         </button>
-        <button class="btn warning thick" onclick=${this.doEmit('move-selection-to-trash')}>
+        <button class="btn warning thick" @click=${this.doEmit('move-selection-to-trash')}>
           Move to Trash
         </button>
       </div>
@@ -62,7 +62,7 @@ class HeaderControls extends LitElement {
   }
 
   doEmit (evt) {
-    return () => this.dispatchEvent(evt)
+    return () => this.dispatchEvent(new CustomEvent(evt))
   }
 
   onKeyupSearch (e) {
