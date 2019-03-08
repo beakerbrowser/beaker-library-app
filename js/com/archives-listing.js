@@ -1,12 +1,12 @@
-import {html} from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-element.js'
-import {library, profiles} from '../tmp-beaker.js'
-import {followgraph} from '../tmp-unwalled-garden.js'
+import { html } from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-element.js'
+import { library, profiles } from '../tmp-beaker.js'
+import { followgraph } from '../tmp-unwalled-garden.js'
 import bytes from '/vendor/beaker-app-stdlib/vendor/bytes/index.js'
-import {pluralize} from '/vendor/beaker-app-stdlib/js/strings.js'
-import {Table} from '/vendor/beaker-app-stdlib/js/com/table.js'
+import { pluralize } from '/vendor/beaker-app-stdlib/js/strings.js'
+import { Table } from '/vendor/beaker-app-stdlib/js/com/table.js'
 import * as contextMenu from '/vendor/beaker-app-stdlib/js/com/context-menu.js'
 import * as toast from '/vendor/beaker-app-stdlib/js/com/toast.js'
-import {writeToClipboard} from '/vendor/beaker-app-stdlib/js/clipboard.js'
+import { writeToClipboard } from '/vendor/beaker-app-stdlib/js/clipboard.js'
 import tableCSS from '/vendor/beaker-app-stdlib/css/com/table.css.js'
 import archivesListingCSS from '../../css/com/archives-listing.css.js'
 
@@ -84,10 +84,21 @@ class ArchivesListing extends Table {
     }
   }
 
+  selectAll () {
+    this.selectedRows = fromEntries(this.archives.map(({url}) => ([url, true]))) // create an object of {[url]: true} for each entry
+    this.dispatchEvent(new Event('selection-changed'))
+  }
+
+  deselectAll () {
+    this.selectedRows = {}
+    this.dispatchEvent(new Event('selection-changed'))
+  }
+
   // data management
   // =
 
   async load () {
+    this.deselectAll()
     try {
       if (this.currentCategory === 'following') {
         let user = await profiles.getCurrentUser()
@@ -161,9 +172,10 @@ class ArchivesListing extends Table {
   }
 
   renderRowButtons (row) {
+    const deleteEvent = row.saved ? 'move-to-trash' : 'delete-permanently'
     return html`
       <div>
-        <button class="btn transparent trash-btn" @click=${e => this.emit('move-to-trash', {url: row.url})}><i class="fas fa-trash"></i></button>
+        <button class="btn transparent trash-btn" @click=${e => this.emit(e, deleteEvent, {url: row.url})}><i class="fas fa-trash"></i></button>
         <button class="btn transparent context-btn" @click=${e => this.onClickRowMenu(e, row)}><i class="fa fa-ellipsis-v"></i></button>
         <span class="select-check" @click=${e => this.onSelectRow(e, row)}><i class="fa fa-check-circle"></i></span>
       </div>
@@ -173,7 +185,11 @@ class ArchivesListing extends Table {
   // events
   // =
 
-  emit (evt, detail) {
+  emit (origEvt, evt, detail) {
+    if (origEvt) {
+      origEvt.preventDefault()
+      origEvt.stopPropagation()
+    }
     this.dispatchEvent(new CustomEvent(evt, {detail}))
   }
 
@@ -209,10 +225,10 @@ class ArchivesListing extends Table {
       {icon: 'code', label: 'View source', click: () => window.open(`beaker://editor/${row.url}`)}
     ]
     if (row.saved) {
-      items.push({icon: 'fas fa-trash', label: 'Move to trash', click: () => this.emit('move-to-trash', {url: row.url})})
+      items.push({icon: 'fas fa-trash', label: 'Move to trash', click: () => this.emit(null, 'move-to-trash', {url: row.url})})
     } else {
-      items.push({icon: 'fa fa-undo', label: 'Restore from trash', click: () => this.emit('restore-from-trash', {url: row.url})})
-      items.push({icon: 'fa fa-times-circle', label: 'Delete permanently', click: () => this.emit('delete-permanently', {url: row.url})})
+      items.push({icon: 'fa fa-undo', label: 'Restore from trash', click: () => this.emit(null, 'restore-from-trash', {url: row.url})})
+      items.push({icon: 'fa fa-times-circle', label: 'Delete permanently', click: () => this.emit(null, 'delete-permanently', {url: row.url})})
     }
     await contextMenu.create(Object.assign({x, y, items, fontAwesomeCSSUrl: '/vendor/beaker-app-stdlib/css/fontawesome.css'}, opts))
   }
@@ -265,4 +281,9 @@ function timeDifference (ts) {
     let n = Math.round(elapsed/msPerYear )
     return `${n} ${pluralize(n, 'year')} ago`
   }
+}
+
+function fromEntries (iterable) {
+  return [...iterable]
+    .reduce((obj, { 0: key, 1: val }) => Object.assign(obj, { [key]: val }), {})
 }

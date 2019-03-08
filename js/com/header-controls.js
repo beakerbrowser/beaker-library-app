@@ -4,6 +4,7 @@ import headerControlsCSS from '../../css/com/header-controls.css.js'
 class HeaderControls extends LitElement {
   static get properties () {
     return {
+      currentCategory: {type: String, attribute: 'current-category'},
       hasSelection: {type: Boolean, attribute: 'has-selection', reflect: true}
     }
   }
@@ -16,16 +17,20 @@ class HeaderControls extends LitElement {
   render () {
     return html`
       <link rel="stylesheet" href="/vendor/beaker-app-stdlib/css/fontawesome.css">
-      <div class="search-container">
-        <input autofocus="autofocus" placeholder="Search your Library" type="text" class="search" @keyup=${this.onKeyupSearch}>
-        <i class="fa fa-search"></i>
-      </div>
+      ${this.currentCategory === 'trash'
+        ? ''
+        : html`
+          <div class="search-container">
+            <input autofocus="autofocus" placeholder="Search your Library" type="text" class="search" @keyup=${this.onKeyupSearch}>
+            <i class="fa fa-search"></i>
+          </div>
+        `}
       ${this.renderActions()}
     `
   }
 
   renderActions () {
-    if (this.hasSelection) {
+    if (this.hasSelection || this.currentCategory === 'trash') {
       return this.renderSelectionActions()
     } else {
       return this.renderStandardActions()
@@ -54,9 +59,20 @@ class HeaderControls extends LitElement {
         <button class="btn transparent thick" @click=${this.doEmit('deselect-all')}>
           Deselect all
         </button>
-        <button class="btn warning thick" @click=${this.doEmit('move-selection-to-trash')}>
-          Move to Trash
-        </button>
+        ${this.currentCategory === 'trash'
+          ? html`
+            <button class="btn thick" ?disabled=${!this.hasSelection} @click=${this.doEmit('restore-selection-from-trash')}>
+              Restore from Trash
+            </button>
+            <button class="btn thick" ?disabled=${!this.hasSelection} @click=${this.doEmit('delete-selection-permanently')}>
+              Delete permanently
+            </button>
+          `
+          : html`
+            <button class="btn warning thick" @click=${this.doEmit('move-selection-to-trash')}>
+              Move to Trash
+            </button>
+          `}
       </div>
     `
   }

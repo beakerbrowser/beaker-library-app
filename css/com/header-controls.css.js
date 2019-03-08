@@ -14,10 +14,11 @@ ${searchInputCSS}
 .search-container {
   position: relative;
   flex: 1;
+  margin-right: 30px;
 }
 
 .actions {
-  margin: 2px 0 0 30px;
+  margin-top: 2px;
 }
 `
 export default cssStr
