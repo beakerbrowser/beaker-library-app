@@ -27,9 +27,6 @@ class ArchivesListing extends Table {
     this.archives = []
     this.sortColumn = 'title'
     this.searchQuery = ''
-    this.sort()
-
-    this.load()
   }
 
   get columns () {
@@ -109,6 +106,7 @@ class ArchivesListing extends Table {
         }
         this.archives = await library.list({filters})
       }
+      this.sort()
       console.log(this.archives)
     } catch (e) {
       console.error('Error while loading archives')
