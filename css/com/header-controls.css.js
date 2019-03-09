@@ -8,7 +8,9 @@ ${searchInputCSS}
 
 :host {
   display: flex;
-  margin-bottom: 20px;
+  padding: 10px 0 20px;
+  border-bottom: 1px solid #ddd;
+  background: #f7f7f7;
 }
 
 .search-container {

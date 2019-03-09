@@ -32,12 +32,8 @@ class ArchivesListing extends Table {
   get columns () {
     return [
       {id: 'favicon', width: 30, renderer: 'renderRowFavicon'},
-      {id: 'title', label: 'Title', flex: 3, renderer: 'renderRowTitle'},
-      {id: 'owner', label: 'Owner', flex: 1, renderer: 'renderRowOwner'},
-      {id: 'peers', label: 'Peers', flex: 1, renderer: 'renderPeers'},
-      {id: 'last-updated', label: 'Last updated', flex: 1, renderer: 'renderRowLastUpdated'},
-      {id: 'size', label: 'Size', flex: 1, renderer: 'renderRowSize'},
-      {id: 'buttons', label: '', width: 65, renderer: 'renderRowButtons'}
+      {id: 'title', flex: 4, renderer: 'renderRowTitle'},
+      {id: 'size', width: 70, renderer: 'renderRowSize'}
     ]
   }
 
@@ -72,10 +68,6 @@ class ArchivesListing extends Table {
     return this.selectedRows[row.url]
   }
 
-  getRowHref (row) {
-    return row.url
-  }
-
   attributeChangedCallback (name, oldval, newval) {
     super.attributeChangedCallback(name, oldval, newval)
     if (name === 'current-category' && newval) {
@@ -106,14 +98,26 @@ class ArchivesListing extends Table {
         this.archives = await Promise.all(follows.map(follow => library.get(follow.url)))
       } else {
         let filters = {}
-        if (this.currentCategory === 'all') {
-          filters.saved = true
-        } else if (this.currentCategory === 'owned') {
-          filters.owner = true
-          filters.saved = true
-        } else if (this.currentCategory === 'trash') {
-          filters.owner = true
-          filters.saved = false
+        switch (this.currentCategory) {
+          case 'seeding':
+            filters.owner = false
+            filters.saved = true
+            break
+          case 'owned':
+            filters.owner = true
+            filters.saved = true
+            break
+          case 'cache':
+            filters.owner = false
+            filters.saved = false
+            break
+          case 'trash':
+            filters.owner = true
+            filters.saved = false
+            break
+          case 'all':
+            filters.saved = true
+            break
         }
         this.archives = await library.list({filters})
       }
@@ -135,7 +139,6 @@ class ArchivesListing extends Table {
         case 'size': v = a.size - b.size; break
         case 'peers': v = a.connections - b.connections; break
         case 'last-updated': v = a.mtime - b.mtime; break
-        case 'owner': v = getOwner(b).localeCompare(getOwner(a)); break
       }
       if (v === 0) v = (b.title || '').localeCompare(a.title || '') // use title to tie-break
       return v * direction
@@ -151,20 +154,15 @@ class ArchivesListing extends Table {
   }
 
   renderRowTitle (row) {
-    return row.title || html`<em>Untitled</em>`
-  }
-
-  renderRowOwner (row) {
-    return getOwner(row)
-  }
-
-  renderPeers (row) {
-    return row.connections || '--'
-  }
-
-  renderRowLastUpdated (row) {
-    // TODO switch to Intl.RelativeTimeFormat when Beaker reaches Chrome 71
-    return row.mtime ? timeDifference(row.mtime) : '--'
+    return html`
+      <div class="title-line"><a href="${row.url}">${row.title || html`<em>Untitled</em>`}</a></div>
+      ${row.description ? html`<div class="description-line">${row.description}</div>` : ''}
+      <div class="meta-line">
+        <span>Website</span>
+        <span><i class="fas fa-share-alt"></i> ${row.connections}</span>
+        ${row.mtime ? html`<span>Last updated ${timeDifference(row.mtime)}</span>` : ''}
+      </div>
+    `
   }
 
   renderRowSize (row) {
@@ -172,12 +170,11 @@ class ArchivesListing extends Table {
   }
 
   renderRowButtons (row) {
-    const deleteEvent = row.saved ? 'move-to-trash' : 'delete-permanently'
     return html`
       <div>
-        <button class="btn transparent trash-btn" @click=${e => this.emit(e, deleteEvent, {url: row.url})}><i class="fas fa-trash"></i></button>
-        <button class="btn transparent context-btn" @click=${e => this.onClickRowMenu(e, row)}><i class="fa fa-ellipsis-v"></i></button>
-        <span class="select-check" @click=${e => this.onSelectRow(e, row)}><i class="fa fa-check-circle"></i></span>
+        <button class="btn context-btn" @click=${e => this.onClickRowMenu(e, row)}>
+          Actions <i class="fa fa-caret-down"></i>
+        </button>
       </div>
     `
   }
@@ -193,11 +190,12 @@ class ArchivesListing extends Table {
     this.dispatchEvent(new CustomEvent(evt, {detail}))
   }
 
-  onSelectRow (e, row) {
-    e.preventDefault()
-    e.stopPropagation()
-
-    this.selectedRows[row.url] = !this.selectedRows[row.url]
+  onClickRow (e, row) {
+    if (e.shiftKey) {
+      this.selectedRows[row.url] = !this.selectedRows[row.url]
+    } else {
+      this.selectedRows = {[row.url]: true}
+    }
     this.requestUpdate()
     this.dispatchEvent(new Event('selection-changed'))
   }
@@ -238,10 +236,6 @@ customElements.define('library-archives-listing', ArchivesListing)
 
 // helpers
 // =
-
-function getOwner (archive) {
-  return archive.owner ? 'me' : ''
-}
 
 // get the offsetTop relative to the document
 function getTop (el) {

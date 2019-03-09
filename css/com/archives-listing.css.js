@@ -9,7 +9,12 @@ ${commonCSS}
 }
 
 .row {
-  position: relative; /* to position the select-check */
+  height: auto;
+  padding: 20px 20px;
+}
+
+.row:first-child {
+  border-top: 0;
 }
 
 .row .col:not(.title) {
@@ -21,30 +26,41 @@ ${commonCSS}
   height: 20px;
 }
 
-.trash-btn {
-  visibility: hidden;
-}
-.row:hover .trash-btn {
-  visibility: visible;
+.title-line,
+.description-line {
+  margin-bottom: 6px;
 }
 
-.select-check {
-  opacity: 0;
-  position: absolute;
-  top: 4px;
-  right: -38px;
-  padding: 10px;
-  font-size: 1.15rem;
-  color: #ccc;
+.title-line {
+  font-size: 15px;
+  font-weight: 500;
 }
 
-.row:hover .select-check,
-.row.selected .select-check {
-  opacity: 1;
+.title-line a {
+  color: var(--blue);
 }
 
-.row.selected .select-check {
-  color: #41b855;
+.title-line a:hover {
+  text-decoration: underline;
+}
+
+.description-line {
+  font-size: 14px;
+  color: rgba(0,0,0,.7);
+}
+
+.meta-line {
+  font-size: 13px;
+  color: rgba(0,0,0,.7);
+}
+
+.meta-line span {
+  display: inline-block;
+  margin-right: 20px;
+}
+
+.meta-line i {
+  font-size: 11px;
 }
 `
 export default cssStr

@@ -15,9 +15,12 @@ const cssStr = css`
   height: 32px;
   margin-right: 5px;
 }
+.nav {
+  font-size: 14px;
+}
 .nav a {
   display: block;
-  padding: 5px 10px;
+  padding: 7px 10px;
   cursor: pointer;
   color: rgba(51, 51, 51, 0.9);
 }
@@ -26,6 +29,12 @@ const cssStr = css`
 }
 .nav a.active {
   font-weight: bold;
+  background: #eee;
+  border-radius: 4px;
+}
+hr {
+  border: 0;
+  border-bottom: 1px solid #ccc;
 }
 .fa-fw {
   margin-right: 3px;

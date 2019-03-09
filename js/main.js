@@ -4,7 +4,6 @@ import * as toast from '/vendor/beaker-app-stdlib/js/com/toast.js'
 import './com/sidebar.js'
 import './com/header-controls.js'
 import './com/archives-listing.js'
-import './com/footer-hint.js'
 
 class Archives extends LitElement {
   static get properties() {
@@ -18,7 +17,7 @@ class Archives extends LitElement {
   constructor () {
     super()
     this.searchQuery = ''
-    this.currentCategory = 'all'
+    this.currentCategory = 'owned'
     this.selectedUrls = []
   }
 
@@ -108,9 +107,11 @@ class Archives extends LitElement {
           @move-to-trash=${this.onMoveToTrash}
           @restore-from-trash=${this.onRestoreFromTrash}
           @delete-permanently=${this.onDeletePermanently}
-        ></library-archives-listing>        
-        <library-footer-hint />
+        ></library-archives-listing>
       </main>
+      <aside>
+        <library-detailsbar><!-- todo --></library-detailsbar>
+      </aside>
     `
   }
 
@@ -163,17 +164,33 @@ class Archives extends LitElement {
 Archives.styles = css`
 :host {
   display: flex;
+  max-width: 1040px;
+  margin: 0 auto 100px;
 }
 
 nav {
   width: 170px;
-  padding: 20px 15px;
+  padding: 0 15px;
 }
 
 main {
   flex: 1;
-  padding: 16px 80px 0 0;
 }
+
+aside {
+  width: 130px;
+}
+
+library-sidebar {
+  padding: 20px 0;
+}
+
+library-sidebar,
+library-header-controls {
+  position: sticky;
+  top: 0px;
+}
+
 `
 
 customElements.define('library-archives', Archives)
