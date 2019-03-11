@@ -13,10 +13,6 @@ ${commonCSS}
   padding: 20px 20px;
 }
 
-.row:first-child {
-  border-top: 0;
-}
-
 .row .col:not(.title) {
   color: rgba(0,0,0,.5);
 }

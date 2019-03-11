@@ -109,9 +109,6 @@ class Archives extends LitElement {
           @delete-permanently=${this.onDeletePermanently}
         ></library-archives-listing>
       </main>
-      <aside>
-        <library-detailsbar><!-- todo --></library-detailsbar>
-      </aside>
     `
   }
 
@@ -165,7 +162,7 @@ Archives.styles = css`
 :host {
   display: flex;
   max-width: 1040px;
-  margin: 0 auto 100px;
+  margin: 0 0 100px;
 }
 
 nav {
@@ -177,16 +174,8 @@ main {
   flex: 1;
 }
 
-aside {
-  width: 130px;
-}
-
 library-sidebar {
   padding: 20px 0;
-}
-
-library-sidebar,
-library-header-controls {
   position: sticky;
   top: 0px;
 }
