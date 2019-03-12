@@ -23,7 +23,8 @@ ${commonCSS}
 }
 
 .title-line,
-.description-line {
+.description-line,
+.local-path-line {
   margin-bottom: 6px;
 }
 
@@ -43,6 +44,15 @@ ${commonCSS}
 .description-line {
   font-size: 14px;
   color: rgba(0,0,0,.7);
+}
+
+.local-path-line {
+  background: #f5f5f6;
+  padding: 3px 6px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 500;
+  display: inline-block;
 }
 
 .meta-line {

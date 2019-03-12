@@ -151,6 +151,7 @@ class ArchivesListing extends Table {
     return html`
       <div class="title-line"><a href="${row.url}">${row.title || html`<em>Untitled</em>`}</a></div>
       ${row.description ? html`<div class="description-line">${row.description}</div>` : ''}
+      ${row.localPath ? html`<div class="local-path-line">${row.localPath}</div>` : ''}
       <div class="meta-line">
         <span>Website</span>
         <span><i class="fas fa-share-alt"></i> ${row.connections}</span>
