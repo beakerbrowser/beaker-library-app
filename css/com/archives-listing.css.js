@@ -58,5 +58,15 @@ ${commonCSS}
 .meta-line i {
   font-size: 11px;
 }
+
+.empty {
+  background: #e5e9ef;
+  color: rgb(44, 93, 130);
+  border-radius: 4px;
+  text-align: center;
+  padding: 150px 0;
+  font-size: 16px;
+  border: 1px solid rgb(188, 206, 220);
+}
 `
 export default cssStr
