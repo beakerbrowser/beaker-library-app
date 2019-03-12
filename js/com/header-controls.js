@@ -41,7 +41,7 @@ class HeaderControls extends LitElement {
     return html`
       <div class="actions">
         <div class="dropdown toggleable-container">
-          <button class="btn primary thick toggleable">
+          <button class="btn primary thick toggleable" @click=${this.onClickNew}>
             New +
           </button>
         </div>
@@ -79,6 +79,11 @@ class HeaderControls extends LitElement {
 
   doEmit (evt) {
     return () => this.dispatchEvent(new CustomEvent(evt))
+  }
+
+  async onClickNew () {
+    var archive = await DatArchive.create({prompt: false})
+    window.location = `beaker://editor/${archive.url}`
   }
 
   onKeyupSearch (e) {
