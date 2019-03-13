@@ -92,29 +92,35 @@ class ArchivesListing extends Table {
   async load () {
     this.deselectAll()
     try {
-      let filters = {}
-      switch (this.currentCategory) {
-        case 'seeding':
-          filters.owner = false
-          filters.saved = true
-          break
-        case 'owned':
-          filters.owner = true
-          filters.saved = true
-          break
-        case 'cache':
-          filters.owner = false
-          filters.saved = false
-          break
-        case 'trash':
-          filters.owner = true
-          filters.saved = false
-          break
-        case 'all':
-          filters.saved = true
-          break
+      if (this.currentCategory === 'following') {
+        let user = await profiles.getCurrentUser()
+        let follows = await followgraph.listFollows(user.url)
+        this.archives = await Promise.all(follows.map(follow => library.get(follow.url)))
+      } else {
+        let filters = {}
+        switch (this.currentCategory) {
+          case 'seeding':
+            filters.owner = false
+            filters.saved = true
+            break
+          case 'owned':
+            filters.owner = true
+            filters.saved = true
+            break
+          case 'cache':
+            filters.owner = false
+            filters.saved = false
+            break
+          case 'trash':
+            filters.owner = true
+            filters.saved = false
+            break
+          case 'all':
+            filters.saved = true
+            break
+        }
+        this.archives = await library.list({filters})
       }
-      this.archives = await library.list({filters})
       this.sort()
       console.log(this.archives)
     } catch (e) {

@@ -17,14 +17,10 @@ class Sidebar extends LitElement {
         <span>Library</span>
       </div>
       <div class="nav">
-        ${this.renderNavItem('owned', 'fas fa-fw fa-pencil-alt', 'My dats')}
-        ${this.renderNavItem('all', 'fas fa-fw fa-hdd', 'All dats')}
+        ${this.renderNavItem('owned', 'fas fa-fw fa-hdd', 'My dats')}
         <hr>
-        ${'' /* TODO
-        ${this.renderNavItem('applications', 'far fa-fw fa-window-maximize', 'Applications')}
-        ${this.renderNavItem('people', 'fas fa-fw fa-user', 'People')}
-        ${this.renderNavItem('websites', 'fas fa-fw fa-file-alt', 'Websites')}
-        <hr>*/}
+        ${this.renderNavItem('following', 'fas fa-fw fa-rss', 'Following')}
+        <hr>
         ${this.renderNavItem('seeding', 'fas fa-fw fa-share-alt', 'Seeding')}
         ${this.renderNavItem('cache', 'fas fa-fw fa-history', 'Cached')}
         ${this.renderNavItem('trash', 'fas fa-fw fa-trash', 'Trash')}

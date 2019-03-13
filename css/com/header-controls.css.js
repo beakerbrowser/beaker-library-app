@@ -15,7 +15,7 @@ ${searchInputCSS}
 .search-container {
   position: relative;
   flex: 1;
-  margin-right: 30px;
+  margin-right: 24px;
 }
 
 .actions {
