@@ -22,7 +22,7 @@ class NewForm extends LitElement {
         </div>
 
         <div>
-          <button type="submit" class="btn success thick">Create website</button>
+          <button type="submit" class="btn primary thick">Create website</button>
         </div>
       </form>
     `
