@@ -17,9 +17,18 @@ ${commonCSS}
   color: rgba(0,0,0,.5);
 }
 
-.favicon {
-  width: 20px;
+img.favicon {
+  max-width: 20px;
   height: 20px;
+  margin-right: 8px;
+}
+
+img.thumb {
+  max-width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 10px;
 }
 
 .title-line,

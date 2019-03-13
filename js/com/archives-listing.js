@@ -9,6 +9,7 @@ import * as toast from '/vendor/beaker-app-stdlib/js/com/toast.js'
 import { writeToClipboard } from '/vendor/beaker-app-stdlib/js/clipboard.js'
 import tableCSS from '/vendor/beaker-app-stdlib/css/com/table.css.js'
 import archivesListingCSS from '../../css/com/archives-listing.css.js'
+import '/vendor/beaker-app-stdlib/js/com/img-fallbacks.js'
 
 class ArchivesListing extends Table {
   static get properties() {
@@ -31,7 +32,7 @@ class ArchivesListing extends Table {
 
   get columns () {
     return [
-      {id: 'favicon', width: 30, renderer: 'renderRowFavicon'},
+      {id: 'thumb', renderer: 'renderRowThumb'},
       {id: 'title', flex: 4, renderer: 'renderRowTitle'},
       {id: 'size', width: 70, renderer: 'renderRowSize'}
     ]
@@ -149,8 +150,13 @@ class ArchivesListing extends Table {
   // rendering
   // =
 
-  renderRowFavicon (row) {
-    return html`<img class="favicon" src="beaker-favicon:32,${row.url}">`
+  renderRowThumb (row) {
+    return html`
+      <beaker-img-fallbacks>
+        <img class="thumb" slot="img1" src="${row.url}/thumb">
+        <img class="favicon" slot="img2" src="beaker-favicon:32,${row.url}">
+      </beaker-img-fallbacks>
+    `
   }
 
   renderRowTitle (row) {
