@@ -4,10 +4,12 @@ import * as toast from '/vendor/beaker-app-stdlib/js/com/toast.js'
 import './com/sidebar.js'
 import './com/header-controls.js'
 import './com/archives-listing.js'
+import './com/new-form.js'
 
 class Archives extends LitElement {
   static get properties() {
     return {
+      currentView: {type: String},
       currentCategory: {type: String},
       searchQuery: {type: String},
       selectedUrls: {type: Array}
@@ -17,13 +19,25 @@ class Archives extends LitElement {
   constructor () {
     super()
     this.searchQuery = ''
-    this.currentCategory = 'owned'
+    this.currentView = ''
+    this.currentCategory = ''
     this.selectedUrls = []
+
+    let urlp = new URL(window.location)
+    if (urlp.searchParams.has('new')) {
+      this.currentView = 'new'
+    } else {
+      this.currentView = 'archives'
+      this.currentCategory = 'owned'
+    }
   }
 
   get listingEl () {
     return this.shadowRoot.querySelector('library-archives-listing')
   }
+
+  // management
+  // =
   
   async moveToTrash (urls) {
     // remove items
@@ -80,8 +94,10 @@ class Archives extends LitElement {
     await this.listingEl.load()
   }
 
+  // rendering
+  // =
+
   render () {
-    var hasSelection = this.selectedUrls.length > 0
     return html`
       <nav>
         <library-sidebar
@@ -90,6 +106,15 @@ class Archives extends LitElement {
         ></library-sidebar>
       </nav>
       <main>
+        ${this.renderView()}
+      </main>
+    `
+  }
+
+  renderView () {
+    if (this.currentView === 'archives') {
+      let hasSelection = this.selectedUrls.length > 0
+      return html`
         <library-header-controls
           ?has-selection=${hasSelection}
           current-category="${this.currentCategory}"
@@ -108,12 +133,21 @@ class Archives extends LitElement {
           @restore-from-trash=${this.onRestoreFromTrash}
           @delete-permanently=${this.onDeletePermanently}
         ></library-archives-listing>
-      </main>
-    `
+      `
+    } else if (this.currentView === 'new') {
+      return html`
+        <library-new-form></library-new-form>
+      `
+    }
   }
 
+  // events
+  // =
+
   onSetCategory (e) {
+    this.currentView = 'archives'
     this.currentCategory = e.detail.category
+    history.replaceState({}, '', '/')
   }
 
   onQueryChanged (e) {
