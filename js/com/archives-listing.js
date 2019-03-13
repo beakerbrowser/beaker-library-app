@@ -108,10 +108,6 @@ class ArchivesListing extends Table {
             filters.owner = true
             filters.saved = true
             break
-          case 'cache':
-            filters.owner = false
-            filters.saved = false
-            break
           case 'trash':
             filters.owner = true
             filters.saved = false
@@ -190,7 +186,6 @@ class ArchivesListing extends Table {
     switch (this.currentCategory) {
       case 'seeding': return html`<div class="empty">You are not currently seeding any dats.</div>`
       case 'owned': return html`<div class="empty">You have not created any dats.</div>`
-      case 'cache': return html`<div class="empty">Your cache is empty.</div>`
       case 'trash': return html`<div class="empty">Your trash is empty.</div>`
       case 'all': return html`<div class="empty">Your library is empty.</div>`
       default: return html`<div class="empty">No dats found.</div>`

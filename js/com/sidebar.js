@@ -18,11 +18,9 @@ class Sidebar extends LitElement {
       </div>
       <div class="nav">
         ${this.renderNavItem('owned', 'fas fa-fw fa-hdd', 'My dats')}
-        <hr>
         ${this.renderNavItem('following', 'fas fa-fw fa-rss', 'Following')}
-        <hr>
         ${this.renderNavItem('seeding', 'fas fa-fw fa-share-alt', 'Seeding')}
-        ${this.renderNavItem('cache', 'fas fa-fw fa-history', 'Cached')}
+        <hr>
         ${this.renderNavItem('trash', 'fas fa-fw fa-trash', 'Trash')}
       </div>
     `
