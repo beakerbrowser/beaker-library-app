@@ -28,7 +28,7 @@ class Archives extends LitElement {
       this.currentView = 'new'
     } else {
       this.currentView = 'archives'
-      this.currentCategory = 'owned'
+      this.currentCategory = urlp.searchParams.get('category') || 'owned'
     }
   }
 

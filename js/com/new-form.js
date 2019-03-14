@@ -8,7 +8,7 @@ class NewForm extends LitElement {
       <h1>Create a new website</h1>
       <p>
         A website can contain
-        <a class="link" href="https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML/Getting_started" target="_blank">html</a> pages,
+        <a class="link" href="https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML/Getting_started" target="_blank">html</a>,
         <a class="link" href="https://www.markdownguide.org/cheat-sheet" target="_blank">markdown</a>,
         files, and more.
       </p>
