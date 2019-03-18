@@ -93,8 +93,8 @@ class ArchivesListing extends Table {
   async load () {
     this.deselectAll()
     try {
+      let user = await profiles.getCurrentUser()
       if (this.currentCategory === 'following') {
-        let user = await profiles.getCurrentUser()
         let follows = await followgraph.listFollows(user.url)
         this.archives = await Promise.all(follows.map(follow => library.get(follow.url)))
       } else {
@@ -119,6 +119,8 @@ class ArchivesListing extends Table {
         this.archives = await library.list({filters})
       }
       this.sort()
+      try { this.archives.find(a => a.url === user.url).isUser = true }
+      catch (e) {}
       console.log(this.archives)
     } catch (e) {
       console.error('Error while loading archives')
@@ -161,7 +163,7 @@ class ArchivesListing extends Table {
       ${row.description ? html`<div class="description-line">${row.description}</div>` : ''}
       ${row.localPath ? html`<div class="local-path-line">${row.localPath}</div>` : ''}
       <div class="meta-line">
-        <span>Website</span>
+        <span>${row.isUser ? html`<strong>Your Profile</strong>` : 'Website'}</span>
         <span><i class="fas fa-share-alt"></i> ${row.connections}</span>
         ${row.mtime ? html`<span>Last updated ${timeDifference(row.mtime)}</span>` : ''}
       </div>
@@ -235,11 +237,13 @@ class ArchivesListing extends Table {
       {icon: 'fa fa-link', label: 'Copy URL', click: () => writeToClipboard(row.url)},
       {icon: 'code', label: 'View source', click: () => window.open(`beaker://editor/${row.url}`)}
     ]
-    if (row.saved) {
-      items.push({icon: 'fas fa-trash', label: 'Move to trash', click: () => this.emit(null, 'move-to-trash', {url: row.url})})
-    } else {
-      items.push({icon: 'fa fa-undo', label: 'Restore from trash', click: () => this.emit(null, 'restore-from-trash', {url: row.url})})
-      items.push({icon: 'fa fa-times-circle', label: 'Delete permanently', click: () => this.emit(null, 'delete-permanently', {url: row.url})})
+    if (!row.isUser) {
+      if (row.saved) {
+        items.push({icon: 'fas fa-trash', label: 'Move to trash', click: () => this.emit(null, 'move-to-trash', {url: row.url})})
+      } else {
+        items.push({icon: 'fa fa-undo', label: 'Restore from trash', click: () => this.emit(null, 'restore-from-trash', {url: row.url})})
+        items.push({icon: 'fa fa-times-circle', label: 'Delete permanently', click: () => this.emit(null, 'delete-permanently', {url: row.url})})
+      }
     }
     await contextMenu.create(Object.assign({x, y, items, fontAwesomeCSSUrl: '/vendor/beaker-app-stdlib/css/fontawesome.css'}, opts))
   }
