@@ -186,12 +186,12 @@ class ArchivesListing extends Table {
 
   renderEmpty () {
     switch (this.currentCategory) {
-      case 'following': return html`<div class="empty">You are not currently following any dats.</div>`
-      case 'seeding': return html`<div class="empty">You are not currently seeding any dats.</div>`
-      case 'owned': return html`<div class="empty">You have not created any dats.</div>`
+      case 'following': return html`<div class="empty">You are not currently following any sites.</div>`
+      case 'seeding': return html`<div class="empty">You are not currently seeding any sites.</div>`
+      case 'owned': return html`<div class="empty">You have not created any sites.</div>`
       case 'trash': return html`<div class="empty">Your trash is empty.</div>`
       case 'all': return html`<div class="empty">Your library is empty.</div>`
-      default: return html`<div class="empty">No dats found.</div>`
+      default: return html`<div class="empty">No sites found.</div>`
     }
   }
 
