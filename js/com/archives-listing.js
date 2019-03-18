@@ -186,6 +186,7 @@ class ArchivesListing extends Table {
 
   renderEmpty () {
     switch (this.currentCategory) {
+      case 'following': return html`<div class="empty">You are not currently following any dats.</div>`
       case 'seeding': return html`<div class="empty">You are not currently seeding any dats.</div>`
       case 'owned': return html`<div class="empty">You have not created any dats.</div>`
       case 'trash': return html`<div class="empty">Your trash is empty.</div>`
@@ -206,6 +207,10 @@ class ArchivesListing extends Table {
   }
 
   onClickRow (e, row) {
+    // DISABLED
+    // this behavior isnt my favorite right now
+    // -prf
+    return
     if (e.shiftKey) {
       this.selectedRows[row.url] = !this.selectedRows[row.url]
     } else {
