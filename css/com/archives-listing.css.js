@@ -79,13 +79,12 @@ img.thumb {
 }
 
 .empty {
-  background: #e5e9ef;
-  color: rgb(44, 93, 130);
-  border-radius: 4px;
+  background: #fff;
+  color: gray;
   text-align: center;
   padding: 150px 0;
   font-size: 16px;
-  border: 1px solid rgb(188, 206, 220);
+  border: 1px solid #e6e6e6;
 }
 `
 export default cssStr
