@@ -1,6 +1,6 @@
 import { html } from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-element.js'
 import { library, profiles } from '../tmp-beaker.js'
-import { followgraph } from '../tmp-unwalled-garden.js'
+import { graph } from '../tmp-unwalled-garden.js'
 import bytes from '/vendor/beaker-app-stdlib/vendor/bytes/index.js'
 import { pluralize } from '/vendor/beaker-app-stdlib/js/strings.js'
 import { Table } from '/vendor/beaker-app-stdlib/js/com/table.js'
@@ -95,7 +95,7 @@ class ArchivesListing extends Table {
     try {
       let user = await profiles.getCurrentUser()
       if (this.currentCategory === 'following') {
-        let follows = await followgraph.listFollows(user.url)
+        let follows = await graph.listFollows(user.url)
         this.archives = await Promise.all(follows.map(follow => library.get(follow.url)))
       } else {
         let filters = {}

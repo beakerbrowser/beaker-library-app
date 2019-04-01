@@ -1,3 +1,3 @@
 // TODO replace this with dat://unwalled.garden
 
-export const followgraph = navigator.importSystemAPI('unwalled-garden-followgraph')
+export const graph = navigator.importSystemAPI('unwalled-garden-graph')
