@@ -1,42 +1,37 @@
 import {LitElement, html, css} from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-element.js'
 import {classMap} from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-html/directives/class-map.js'
 import sidebarCSS from '../../css/com/sidebar.css.js'
+import { profiles } from '../tmp-beaker.js'
+import { toNiceDomain } from '/vendor/beaker-app-stdlib/js/strings.js'
 
 class Sidebar extends LitElement {
   static get properties () {
     return {
-      currentCategory: {attribute: 'current-category', reflect: true}
+      user: {type: Object}
     }
   }
 
+  constructor () {
+    super()
+    this.load()
+  }
+
+  async load () {
+    this.user = await profiles.getCurrentUser()
+  }
+
   render() {
+    if (!this.user) {
+      return html`<div></div>`
+    }
     return html`
-      <link rel="stylesheet" href="/vendor/beaker-app-stdlib/css/fontawesome.css">
-      <div class="brand">
-        <img src="/img/icon.png">
-        <span>Library</span>
-      </div>
-      <div class="nav">
-        ${this.renderNavItem('owned', 'fas fa-fw fa-hdd', 'Your data')}
-        ${this.renderNavItem('following', 'fas fa-fw fa-rss', 'Following')}
-        ${this.renderNavItem('seeding', 'fas fa-fw fa-share-alt', 'Seeding')}
-        <hr>
-        ${this.renderNavItem('trash', 'fas fa-fw fa-trash', 'Trash')}
+      <div class="profile">
+        <img src="${this.user.url}/thumb">
+        <h1>${this.user.title}</h1>
+        <p class="url"><a href="${this.user.url}">dat://${toNiceDomain(this.user.url, 6)}/</a></p>
+        <p class="bio">${this.user.description} Loves hacking, p2p, and everything Web. Austin. Father, son, brother.</p>
       </div>
     `
-  }
-
-  renderNavItem (id, icon, label) {
-    const cls = classMap({active: this.currentCategory === id})
-    return html`
-      <a class="${cls}" @click=${e => this.onClickNavItem(e, id)}>
-        <i class="${icon}"></i>
-        ${label}
-      </a>`
-  }
-
-  onClickNavItem (e, id) {
-    this.dispatchEvent(new CustomEvent('set-category', {detail: {category: id}}))
   }
 }
 Sidebar.styles = sidebarCSS

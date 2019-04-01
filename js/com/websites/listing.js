@@ -1,6 +1,6 @@
 import { html } from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-element.js'
-import { library, profiles } from '../tmp-beaker.js'
-import { graph } from '../tmp-unwalled-garden.js'
+import { library, profiles } from '../../tmp-beaker.js'
+import { graph } from '../../tmp-unwalled-garden.js'
 import bytes from '/vendor/beaker-app-stdlib/vendor/bytes/index.js'
 import { pluralize } from '/vendor/beaker-app-stdlib/js/strings.js'
 import { Table } from '/vendor/beaker-app-stdlib/js/com/table.js'
@@ -8,10 +8,10 @@ import * as contextMenu from '/vendor/beaker-app-stdlib/js/com/context-menu.js'
 import * as toast from '/vendor/beaker-app-stdlib/js/com/toast.js'
 import { writeToClipboard } from '/vendor/beaker-app-stdlib/js/clipboard.js'
 import tableCSS from '/vendor/beaker-app-stdlib/css/com/table.css.js'
-import archivesListingCSS from '../../css/com/archives-listing.css.js'
+import websitesListingCSS from '../../../css/com/websites/listing.css.js'
 import '/vendor/beaker-app-stdlib/js/com/img-fallbacks.js'
 
-class ArchivesListing extends Table {
+class WebsitesListing extends Table {
   static get properties() {
     return { 
       rows: {type: Array},
@@ -118,9 +118,8 @@ class ArchivesListing extends Table {
         }
         this.archives = await library.list({filters})
       }
+      this.archives = this.archives.filter(a => a.url !== user.url)
       this.sort()
-      try { this.archives.find(a => a.url === user.url).isUser = true }
-      catch (e) {}
       console.log(this.archives)
     } catch (e) {
       console.error('Error while loading archives')
@@ -133,13 +132,7 @@ class ArchivesListing extends Table {
   sort () {
     var direction = this.sortDirection === 'asc' ? -1 : 1
     this.archives.sort((a, b) => {
-      var v = 0
-      switch (this.sortColumn) {
-        case 'size': v = a.size - b.size; break
-        case 'peers': v = a.connections - b.connections; break
-        case 'last-updated': v = a.mtime - b.mtime; break
-      }
-      if (v === 0) v = (b.title || '').localeCompare(a.title || '') // use title to tie-break
+      var v = (b.title || '').localeCompare(a.title || '')
       return v * direction
     })
     this.requestUpdate()
@@ -149,12 +142,13 @@ class ArchivesListing extends Table {
   // =
 
   renderRowThumb (row) {
-    return html`
-      <beaker-img-fallbacks>
-        <img class="thumb" slot="img1" src="${row.url}/thumb">
-        <img class="favicon" slot="img2" src="beaker-favicon:32,${row.url}">
-      </beaker-img-fallbacks>
-    `
+    return html`<img class="favicon" slot="img2" src="beaker-favicon:32,${row.url}">`
+    // return html`
+    //   <beaker-img-fallbacks>
+    //     <img class="thumb" slot="img1" src="${row.url}/thumb">
+    //     <img class="favicon" slot="img2" src="beaker-favicon:32,${row.url}">
+    //   </beaker-img-fallbacks>
+    // `
   }
 
   renderRowTitle (row) {
@@ -163,7 +157,7 @@ class ArchivesListing extends Table {
       ${row.description ? html`<div class="description-line">${row.description}</div>` : ''}
       ${row.localPath ? html`<div class="local-path-line">${row.localPath}</div>` : ''}
       <div class="meta-line">
-        <span>${row.isUser ? html`<strong>Your Profile</strong>` : 'Website'}</span>
+        <span>${row.isUser ? html`<strong>Your Profile Site</strong>` : 'Website'}</span>
         <span><i class="fas fa-share-alt"></i> ${row.connections}</span>
         ${row.mtime ? html`<span>Last updated ${timeDifference(row.mtime)}</span>` : ''}
       </div>
@@ -253,8 +247,8 @@ class ArchivesListing extends Table {
     await contextMenu.create(Object.assign({x, y, items, fontAwesomeCSSUrl: '/vendor/beaker-app-stdlib/css/fontawesome.css'}, opts))
   }
 }
-ArchivesListing.styles = [tableCSS, archivesListingCSS]
-customElements.define('library-archives-listing', ArchivesListing)
+WebsitesListing.styles = [tableCSS, websitesListingCSS]
+customElements.define('library-websites-listing', WebsitesListing)
 
 // helpers
 // =

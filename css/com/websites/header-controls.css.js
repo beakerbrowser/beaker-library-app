@@ -8,14 +8,14 @@ ${searchInputCSS}
 
 :host {
   display: flex;
-  padding: 10px 0 20px;
+  padding: 10px 0 12px;
   background: #f7f7f7;
 }
 
 .search-container {
   position: relative;
   flex: 1;
-  margin-right: 24px;
+  margin-right: 12px;
 }
 
 .actions {

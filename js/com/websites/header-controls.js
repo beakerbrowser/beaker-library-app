@@ -1,8 +1,8 @@
 import { LitElement, html, css } from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-element.js'
 import * as contextMenu from '/vendor/beaker-app-stdlib/js/com/context-menu.js'
-import headerControlsCSS from '../../css/com/header-controls.css.js'
+import websitesHeaderControlsCSS from '../../../css/com/websites/header-controls.css.js'
 
-class HeaderControls extends LitElement {
+class WebsitesHeaderControls extends LitElement {
   static get properties () {
     return {
       currentCategory: {type: String, attribute: 'current-category'},
@@ -22,7 +22,7 @@ class HeaderControls extends LitElement {
         ? ''
         : html`
           <div class="search-container">
-            <input autofocus="autofocus" placeholder="Search your Library" type="text" class="search" @keyup=${this.onKeyupSearch}>
+            <input autofocus="autofocus" placeholder="Find a website" type="text" class="search" @keyup=${this.onKeyupSearch}>
             <i class="fa fa-search"></i>
           </div>
         `}
@@ -102,6 +102,6 @@ class HeaderControls extends LitElement {
     this.dispatchEvent(new CustomEvent('query-changed', {detail: {query: e.currentTarget.value}}))
   }
 }
-HeaderControls.styles = headerControlsCSS
+WebsitesHeaderControls.styles = websitesHeaderControlsCSS
 
-customElements.define('library-header-controls', HeaderControls)
+customElements.define('library-websites-header-controls', WebsitesHeaderControls)

@@ -1,7 +1,7 @@
 import {LitElement, html} from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-element.js'
-import newFormCSS from '../../css/com/new-form.css.js'
+import newFormCSS from '../../css/views/new-website.css.js'
 
-class NewForm extends LitElement {
+class NewWebsite extends LitElement {
   render () {
     return html`
       <link rel="stylesheet" href="/vendor/beaker-app-stdlib/css/fontawesome.css">
@@ -38,6 +38,6 @@ class NewForm extends LitElement {
     window.location = `beaker://editor/${archive.url}`
   }
 }
-NewForm.styles = newFormCSS
+NewWebsite.styles = newFormCSS
 
-customElements.define('library-new-form', NewForm)
+customElements.define('library-view-new-website', NewWebsite)

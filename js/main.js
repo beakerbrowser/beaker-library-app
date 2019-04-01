@@ -1,97 +1,32 @@
 import { LitElement, css, html } from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-element.js'
 import { library } from './tmp-beaker.js'
 import * as toast from '/vendor/beaker-app-stdlib/js/com/toast.js'
+import './com/header-nav.js'
 import './com/sidebar.js'
-import './com/header-controls.js'
-import './com/archives-listing.js'
-import './com/new-form.js'
+import './com/websites/sidebar.js'
+import './views/websites.js'
+import './views/new-website.js'
 
 class Archives extends LitElement {
   static get properties() {
     return {
-      currentView: {type: String},
-      currentCategory: {type: String},
-      searchQuery: {type: String},
-      selectedUrls: {type: Array}
+      view: {type: String},
+      category: {type: String}
     }
   }
 
   constructor () {
     super()
-    this.searchQuery = ''
-    this.currentView = ''
-    this.currentCategory = ''
-    this.selectedUrls = []
+    this.view = ''
+    this.category = ''
 
     let urlp = new URL(window.location)
     if (urlp.searchParams.has('new')) {
-      this.currentView = 'new'
+      this.view = 'new'
     } else {
-      this.currentView = 'archives'
-      this.currentCategory = urlp.searchParams.get('category') || 'owned'
+      this.view = 'websites'
+      this.category = urlp.searchParams.get('category') || 'owned'
     }
-  }
-
-  get listingEl () {
-    return this.shadowRoot.querySelector('library-archives-listing')
-  }
-
-  // management
-  // =
-  
-  async moveToTrash (urls) {
-    // remove items
-    for (let url of urls) {
-      await library.remove(url).catch(err => false)
-    }
-    // reload state
-    this.listingEl.deselectAll()
-    await this.listingEl.load()
-    
-    const undo = async () => {
-      // readd items
-      for (let url of urls) {
-        await library.add(url).catch(err => false)
-      }
-      // reload state
-      await this.listingEl.load()
-    }
-
-    toast.create('Moved to trash', '', 10e3, {label: 'Undo', click: undo})
-  }
-  
-  async restoreFromTrash (urls) {
-    // add items
-    for (let url of urls) {
-      await library.add(url).catch(err => false)
-    }
-    // reload state
-    this.listingEl.deselectAll()
-    await this.listingEl.load()
-    
-    const undo = async () => {
-      // reremove items
-      for (let url of urls) {
-        await library.remove(url).catch(err => false)
-      }
-      // reload state
-      await this.listingEl.load()
-    }
-
-    toast.create('Restored from trash', '', 10e3, {label: 'Undo', click: undo})
-  }
-
-  async deletePermanently (urls) {
-    if (!confirm('Delete permanently? This cannot be undone.')) {
-      return
-    }
-    // permadelete
-    for (let url of urls) {
-      await beaker.archives.delete(url)
-    }
-    // reload state
-    this.listingEl.deselectAll()
-    await this.listingEl.load()
   }
 
   // rendering
@@ -100,10 +35,13 @@ class Archives extends LitElement {
   render () {
     return html`
       <nav>
-        <library-sidebar
-          current-category="${this.currentCategory}"
-          @set-category=${this.onSetCategory}
-        ></library-sidebar>
+        <div class="content">
+          <library-sidebar></library-sidebar>
+          <library-websites-sidebar
+            current-category="${this.category}"
+            @set-category=${this.onSetCategory}
+          ></library-websites-sidebar>
+        </div>
       </nav>
       <main>
         ${this.renderView()}
@@ -112,84 +50,50 @@ class Archives extends LitElement {
   }
 
   renderView () {
-    if (this.currentView === 'archives') {
-      let hasSelection = this.selectedUrls.length > 0
-      return html`
-        <library-header-controls
-          ?has-selection=${hasSelection}
-          current-category="${this.currentCategory}"
-          @query-changed=${this.onQueryChanged}
-          @select-all=${this.onSelectAll}
-          @deselect-all=${this.onDeselectAll}
-          @move-selection-to-trash=${this.onMoveSelectionToTrash}
-          @restore-selection-from-trash=${this.onRestoreSelectionFromTrash}
-          @delete-selection-permanently=${this.onDeleteSelectionPermanently}
-        ></library-header-controls>
-        <library-archives-listing
-          current-category="${this.currentCategory}"
-          search-query="${this.searchQuery}"
-          @selection-changed=${this.onSelectionChanged}
-          @move-to-trash=${this.onMoveToTrash}
-          @restore-from-trash=${this.onRestoreFromTrash}
-          @delete-permanently=${this.onDeletePermanently}
-        ></library-archives-listing>
-      `
-    } else if (this.currentView === 'new') {
-      return html`
-        <library-new-form></library-new-form>
-      `
+    switch (this.view) {
+      case 'bookmarks':
+        return html`
+          <header-nav
+            current-tab=${this.view}
+            @change-tab=${this.onSetView}
+          ></header-nav>
+        `
+      case 'addressbook':
+        return html`
+          <header-nav
+            current-tab=${this.view}
+            @change-tab=${this.onSetView}
+          ></header-nav>
+        `
+      case 'new':
+        return html`
+          <library-view-new-website></library-view-new-website>
+        `
+      default:
+      case 'websites':
+        return html`
+          <header-nav
+            current-tab=${this.view}
+            @change-tab=${this.onSetView}
+          ></header-nav>
+          <library-view-websites
+            category="${this.category}"
+          ></library-view-websites>
+        `
     }
   }
 
   // events
   // =
 
+  onSetView (e) {
+    this.view = e.detail.tab
+  }
+
   onSetCategory (e) {
-    this.currentView = 'archives'
-    this.currentCategory = e.detail.category
+    this.view = 'websites'
+    this.category = e.detail.category
     history.replaceState({}, '', '/')
-  }
-
-  onQueryChanged (e) {
-    this.searchQuery = e.detail.query
-  }
-
-  async onSelectionChanged (e) {
-    this.selectedUrls = this.listingEl.selectedUrls
-    await new Promise(r => setTimeout(r, 0)) // really not sure why, but rendering is not getting schedule if I dont churn the event loop
-    await this.requestUpdate()
-  }
-
-  onSelectAll (e) {
-    this.listingEl.selectAll()
-  }
-
-  onDeselectAll (e) {
-    this.listingEl.deselectAll()
-  }
-
-  onMoveToTrash (e) {
-    this.moveToTrash([e.detail.url])
-  }
-
-  onMoveSelectionToTrash (e) {
-    this.moveToTrash(this.selectedUrls)
-  }
-
-  onRestoreFromTrash (e) {
-    this.restoreFromTrash([e.detail.url])
-  }
-
-  onRestoreSelectionFromTrash (e) {
-    this.restoreFromTrash(this.selectedUrls)
-  }
-
-  onDeletePermanently (e) {
-    this.deletePermanently([e.detail.url])
-  }
-
-  onDeleteSelectionPermanently (e) {
-    this.deletePermanently(this.selectedUrls)
   }
 }
 Archives.styles = css`
@@ -200,7 +104,7 @@ Archives.styles = css`
 }
 
 nav {
-  width: 170px;
+  width: 200px;
   padding: 0 15px;
 }
 
@@ -208,7 +112,7 @@ main {
   flex: 1;
 }
 
-library-sidebar {
+nav .content {
   padding: 20px 0;
   position: sticky;
   top: 0px;
