@@ -1,11 +1,19 @@
 import { LitElement, css, html } from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-element.js'
 import './com/header-nav.js'
 import './com/sidebar.js'
-import './com/websites/sidebar.js'
+import './com/addressbook/sidebar.js'
 import './com/bookmarks/sidebar.js'
-import './views/websites.js'
+import './com/websites/sidebar.js'
+import './views/addressbook.js'
 import './views/bookmarks.js'
+import './views/websites.js'
 import './views/new-website.js'
+
+const DEFAULT_CATEGORIES = {
+  addressbook: 'following',
+  bookmarks: 'your',
+  websites: 'your'
+}
 
 class Library extends LitElement {
   static get properties() {
@@ -24,8 +32,8 @@ class Library extends LitElement {
     if (urlp.searchParams.has('new')) {
       this.view = 'new'
     } else {
-      this.view = 'websites'
-      this.category = urlp.searchParams.get('category') || 'your'
+      this.view = 'addressbook'
+      this.category = urlp.searchParams.get('category') || DEFAULT_CATEGORIES[this.view]
     }
   }
 
@@ -48,6 +56,13 @@ class Library extends LitElement {
 
   renderSidebar () {
     switch (this.view) {
+      case 'addressbook':
+        return html`
+          <library-addressbook-sidebar
+            category="${this.category}"
+            @set-category=${this.onSetCategory}
+          ></library-addressbook-sidebar>
+        `
       case 'websites':
         return html`
           <library-websites-sidebar
@@ -83,6 +98,9 @@ class Library extends LitElement {
             current-tab=${this.view}
             @change-tab=${this.onSetView}
           ></header-nav>
+          <library-view-addressbook
+            category="${this.category}"
+          ></library-view-addressbook>
         `
       case 'new':
         return html`
@@ -107,7 +125,7 @@ class Library extends LitElement {
 
   onSetView (e) {
     this.view = e.detail.tab
-    this.category = 'your'
+    this.category = DEFAULT_CATEGORIES[this.view]
   }
 
   onSetCategory (e) {

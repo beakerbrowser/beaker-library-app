@@ -5,9 +5,9 @@ import headerNavCSS from '../../css/com/header-nav.css.js'
 class HeaderNav extends TabsNav {
   get tabs () {
     return [
-      {id: 'websites', label: `Websites`},
+      {id: 'addressbook', label: `Address book`},
       {id: 'bookmarks', label: `Bookmarks`},
-      {id: 'addressbook', label: `Address book`}
+      {id: 'websites', label: `Websites`}
     ]
   }
 }

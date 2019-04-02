@@ -21,8 +21,7 @@ class Sidebar extends LitElement {
 
   async load () {
     var self = await profiles.getCurrentUser()
-    var users = await graph.listFollows(self.url)
-    this.users = [self].concat(users).filter(Boolean)
+    this.users = await graph.listFollows(self.url)
   }
 
 
