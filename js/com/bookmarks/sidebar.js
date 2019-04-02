@@ -13,10 +13,8 @@ class Sidebar extends LitElement {
     return html`
       <link rel="stylesheet" href="/vendor/beaker-app-stdlib/css/fontawesome.css">
       <div class="nav">
-        ${this.renderNavItem('your', 'fas fa-fw fa-hdd', 'Your websites')}
-        ${this.renderNavItem('seeding', 'fas fa-fw fa-share-alt', 'Seeding')}
-        <hr>
-        ${this.renderNavItem('trash', 'fas fa-fw fa-trash', 'Trash')}
+        ${this.renderNavItem('your', 'fas fa-fw fa-star', 'Your bookmarks')}
+        <h5>Shared</h5>
       </div>
     `
   }
@@ -36,4 +34,4 @@ class Sidebar extends LitElement {
 }
 Sidebar.styles = sidebarCSS
 
-customElements.define('library-websites-sidebar', Sidebar)
+customElements.define('library-bookmarks-sidebar', Sidebar)

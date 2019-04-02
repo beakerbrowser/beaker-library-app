@@ -6,11 +6,12 @@ ${commonCSS}
 
 :host {
   user-select: none;
+  width: 810px;
 }
 
 .row {
   height: auto;
-  padding: 20px 20px;
+  padding: 20px;
 }
 
 .row .col:not(.title) {
@@ -35,6 +36,8 @@ img.thumb {
 .description-line,
 .local-path-line {
   margin-bottom: 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .title-line {
@@ -53,6 +56,7 @@ img.thumb {
 .description-line {
   font-size: 14px;
   color: rgba(0,0,0,.7);
+  white-space: normal;
 }
 
 .local-path-line {

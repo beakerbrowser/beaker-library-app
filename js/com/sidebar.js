@@ -1,5 +1,4 @@
-import {LitElement, html, css} from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-element.js'
-import {classMap} from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-html/directives/class-map.js'
+import { LitElement, html } from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-element.js'
 import sidebarCSS from '../../css/com/sidebar.css.js'
 import { profiles } from '../tmp-beaker.js'
 import { toNiceDomain } from '/vendor/beaker-app-stdlib/js/strings.js'
@@ -29,7 +28,7 @@ class Sidebar extends LitElement {
         <img src="${this.user.url}/thumb">
         <h1>${this.user.title}</h1>
         <p class="url"><a href="${this.user.url}">dat://${toNiceDomain(this.user.url, 6)}/</a></p>
-        <p class="bio">${this.user.description} Loves hacking, p2p, and everything Web. Austin. Father, son, brother.</p>
+        <p class="bio">${this.user.description}</p>
       </div>
     `
   }

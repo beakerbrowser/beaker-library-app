@@ -1,11 +1,11 @@
-import { LitElement, html, css } from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-element.js'
+import { LitElement, html } from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-element.js'
 import * as contextMenu from '/vendor/beaker-app-stdlib/js/com/context-menu.js'
-import websitesHeaderControlsCSS from '../../../css/com/websites/header-controls.css.js'
+import headerControlsCSS from '../../../css/com/header-controls.css.js'
 
 class WebsitesHeaderControls extends LitElement {
   static get properties () {
     return {
-      currentCategory: {type: String, attribute: 'current-category'},
+      category: {type: String},
       hasSelection: {type: Boolean, attribute: 'has-selection', reflect: true}
     }
   }
@@ -18,11 +18,11 @@ class WebsitesHeaderControls extends LitElement {
   render () {
     return html`
       <link rel="stylesheet" href="/vendor/beaker-app-stdlib/css/fontawesome.css">
-      ${this.currentCategory === 'trash'
+      ${this.category === 'trash'
         ? ''
         : html`
           <div class="search-container">
-            <input autofocus="autofocus" placeholder="Find a website" type="text" class="search" @keyup=${this.onKeyupSearch}>
+            <input placeholder="Find a website" type="text" class="search" @keyup=${this.onKeyupSearch}>
             <i class="fa fa-search"></i>
           </div>
         `}
@@ -31,7 +31,7 @@ class WebsitesHeaderControls extends LitElement {
   }
 
   renderActions () {
-    if (this.hasSelection || this.currentCategory === 'trash') {
+    if (this.hasSelection || this.category === 'trash') {
       return this.renderSelectionActions()
     } else {
       return this.renderStandardActions()
@@ -43,7 +43,7 @@ class WebsitesHeaderControls extends LitElement {
       <div class="actions">
         <div class="dropdown toggleable-container">
           <button class="btn primary thick toggleable" @click=${this.onClickNew}>
-            New <span class="fas fa-caret-down"></span>
+            <span class="fas fa-file"></span> New <span class="fas fa-caret-down"></span>
           </button>
         </div>
       </div>
@@ -56,11 +56,11 @@ class WebsitesHeaderControls extends LitElement {
         <button class="btn transparent thick" @click=${this.doEmit('select-all')}>
           Select all
         </button>
-        |
+        <span>|</span>
         <button class="btn transparent thick" @click=${this.doEmit('deselect-all')}>
           Deselect all
         </button>
-        ${this.currentCategory === 'trash'
+        ${this.category === 'trash'
           ? html`
             <button class="btn thick" ?disabled=${!this.hasSelection} @click=${this.doEmit('restore-selection-from-trash')}>
               Restore from Trash
@@ -102,6 +102,6 @@ class WebsitesHeaderControls extends LitElement {
     this.dispatchEvent(new CustomEvent('query-changed', {detail: {query: e.currentTarget.value}}))
   }
 }
-WebsitesHeaderControls.styles = websitesHeaderControlsCSS
+WebsitesHeaderControls.styles = headerControlsCSS
 
 customElements.define('library-websites-header-controls', WebsitesHeaderControls)

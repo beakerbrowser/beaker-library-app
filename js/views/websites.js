@@ -1,4 +1,4 @@
-import { LitElement, css, html } from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-element.js'
+import { LitElement, html } from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-element.js'
 import { library } from '../tmp-beaker.js'
 import * as toast from '/vendor/beaker-app-stdlib/js/com/toast.js'
 import '../com/websites/header-controls.js'
@@ -90,7 +90,7 @@ class Websites extends LitElement {
     return html`
       <library-websites-header-controls
         ?has-selection=${hasSelection}
-        current-category="${this.category}"
+        category="${this.category}"
         @query-changed=${this.onQueryChanged}
         @select-all=${this.onSelectAll}
         @deselect-all=${this.onDeselectAll}
@@ -99,7 +99,7 @@ class Websites extends LitElement {
         @delete-selection-permanently=${this.onDeleteSelectionPermanently}
       ></library-websites-header-controls>
       <library-websites-listing
-        current-category="${this.category}"
+        category="${this.category}"
         search-query="${this.searchQuery}"
         @selection-changed=${this.onSelectionChanged}
         @move-to-trash=${this.onMoveToTrash}
@@ -154,7 +154,5 @@ class Websites extends LitElement {
     this.deletePermanently(this.selectedUrls)
   }
 }
-Websites.styles = css`
-`
 
 customElements.define('library-view-websites', Websites)

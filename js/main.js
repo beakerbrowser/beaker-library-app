@@ -1,13 +1,13 @@
 import { LitElement, css, html } from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-element.js'
-import { library } from './tmp-beaker.js'
-import * as toast from '/vendor/beaker-app-stdlib/js/com/toast.js'
 import './com/header-nav.js'
 import './com/sidebar.js'
 import './com/websites/sidebar.js'
+import './com/bookmarks/sidebar.js'
 import './views/websites.js'
+import './views/bookmarks.js'
 import './views/new-website.js'
 
-class Archives extends LitElement {
+class Library extends LitElement {
   static get properties() {
     return {
       view: {type: String},
@@ -25,7 +25,7 @@ class Archives extends LitElement {
       this.view = 'new'
     } else {
       this.view = 'websites'
-      this.category = urlp.searchParams.get('category') || 'owned'
+      this.category = urlp.searchParams.get('category') || 'your'
     }
   }
 
@@ -37,16 +37,32 @@ class Archives extends LitElement {
       <nav>
         <div class="content">
           <library-sidebar></library-sidebar>
-          <library-websites-sidebar
-            current-category="${this.category}"
-            @set-category=${this.onSetCategory}
-          ></library-websites-sidebar>
+          ${this.renderSidebar()}
         </div>
       </nav>
       <main>
         ${this.renderView()}
       </main>
     `
+  }
+
+  renderSidebar () {
+    switch (this.view) {
+      case 'websites':
+        return html`
+          <library-websites-sidebar
+            category="${this.category}"
+            @set-category=${this.onSetCategory}
+          ></library-websites-sidebar>
+        `
+      case 'bookmarks':
+        return html`
+          <library-bookmarks-sidebar
+            category="${this.category}"
+            @set-category=${this.onSetCategory}
+          ></library-bookmarks-sidebar>
+        `
+    }
   }
 
   renderView () {
@@ -57,6 +73,9 @@ class Archives extends LitElement {
             current-tab=${this.view}
             @change-tab=${this.onSetView}
           ></header-nav>
+          <library-view-bookmarks
+            category="${this.category}"
+          ></library-view-bookmarks>
         `
       case 'addressbook':
         return html`
@@ -88,28 +107,28 @@ class Archives extends LitElement {
 
   onSetView (e) {
     this.view = e.detail.tab
+    this.category = 'your'
   }
 
   onSetCategory (e) {
-    this.view = 'websites'
     this.category = e.detail.category
     history.replaceState({}, '', '/')
   }
 }
-Archives.styles = css`
+Library.styles = css`
 :host {
   display: flex;
-  max-width: 1040px;
-  margin: 0 0 100px;
+  width: 1040px;
+  margin: 0 auto 100px;
 }
 
 nav {
-  width: 200px;
+  flex: 0 0 200px;
   padding: 0 15px;
 }
 
 main {
-  flex: 1;
+  flex: 0 0 810px;
 }
 
 nav .content {
@@ -120,4 +139,4 @@ nav .content {
 
 `
 
-customElements.define('library-archives', Archives)
+customElements.define('library-app', Library)

@@ -15,7 +15,7 @@ class WebsitesListing extends Table {
   static get properties() {
     return { 
       rows: {type: Array},
-      currentCategory: {type: String, attribute: 'current-category'},
+      category: {type: String},
       selectedRows: {type: Object},
       searchQuery: {attribute: 'search-query', reflect: true}
     }
@@ -71,7 +71,7 @@ class WebsitesListing extends Table {
 
   attributeChangedCallback (name, oldval, newval) {
     super.attributeChangedCallback(name, oldval, newval)
-    if (name === 'current-category' && newval) {
+    if (name === 'category' && newval) {
       // trigger a load when we change categories
       this.load()
     }
@@ -94,17 +94,17 @@ class WebsitesListing extends Table {
     this.deselectAll()
     try {
       let user = await profiles.getCurrentUser()
-      if (this.currentCategory === 'following') {
+      if (this.category === 'following') {
         let follows = await graph.listFollows(user.url)
         this.archives = await Promise.all(follows.map(follow => library.get(follow.url)))
       } else {
         let filters = {}
-        switch (this.currentCategory) {
+        switch (this.category) {
           case 'seeding':
             filters.owner = false
             filters.saved = true
             break
-          case 'owned':
+          case 'your':
             filters.owner = true
             filters.saved = true
             break
@@ -179,10 +179,10 @@ class WebsitesListing extends Table {
   }
 
   renderEmpty () {
-    switch (this.currentCategory) {
+    switch (this.category) {
       case 'following': return html`<div class="empty">You are not currently following any sites.</div>`
       case 'seeding': return html`<div class="empty">You are not currently seeding any sites.</div>`
-      case 'owned': return html`<div class="empty">You have not created any sites.</div>`
+      case 'your': return html`<div class="empty">You have not created any sites.</div>`
       case 'trash': return html`<div class="empty">Your trash is empty.</div>`
       case 'all': return html`<div class="empty">Your library is empty.</div>`
       default: return html`<div class="empty">No sites found.</div>`

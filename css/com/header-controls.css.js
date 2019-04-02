@@ -15,11 +15,25 @@ ${searchInputCSS}
 .search-container {
   position: relative;
   flex: 1;
-  margin-right: 12px;
+  margin-right: 8px;
+}
+
+input.search {
+  height: 35px;
+  font-size: 14px;
 }
 
 .actions {
-  margin-top: 2px;
+  display: flex;
+  align-items: center;
+}
+
+.actions > * {
+  margin-left: 5px;
+}
+
+.btn {
+  border-color: #ccc;
 }
 `
 export default cssStr
