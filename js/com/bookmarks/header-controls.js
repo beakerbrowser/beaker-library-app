@@ -1,4 +1,7 @@
 import { LitElement, html } from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-element.js'
+import { BeakerEditBookmarkPopup } from '/vendor/beaker-app-stdlib/js/com/popups/edit-bookmark.js'
+import { bookmarks } from '../../tmp-beaker.js'
+import * as toast from '/vendor/beaker-app-stdlib/js/com/toast.js'
 import * as contextMenu from '/vendor/beaker-app-stdlib/js/com/context-menu.js'
 import headerControlsCSS from '../../../css/com/header-controls.css.js'
 
@@ -70,10 +73,30 @@ class BookmarksHeaderControls extends LitElement {
     })
   }
 
-  onClickNew (e) {
+  async onClickNew (e) {
     e.preventDefault()
     e.stopPropagation()
-    // TODO
+    
+    try {
+      // render popup
+      var b = await BeakerEditBookmarkPopup.create({
+        href: '',
+        title: '',
+        description: '',
+        tags: '',
+        isPublic: false
+      }, {
+        fontawesomeSrc: '/vendor/beaker-app-stdlib/css/fontawesome.css'
+      })
+
+      // save
+      await bookmarks.add(b)
+      toast.create('Bookmark added')
+      this.dispatchEvent(new Event('bookmark-added'))
+    } catch (e) {
+      // ignore
+      console.log(e)
+    }
   }
 
   onKeyupSearch (e) {

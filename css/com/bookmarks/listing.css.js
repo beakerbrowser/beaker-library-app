@@ -17,7 +17,7 @@ ${tooltipCSS}
   height: 16px;
   vertical-align: middle;
   position: relative;
-  top: -2px;
+  top: -1px;
   margin-right: 2px;
 }
 

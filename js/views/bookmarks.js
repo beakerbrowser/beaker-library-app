@@ -31,6 +31,7 @@ class Bookmarks extends LitElement {
         filter="${this.filter}"
         @query-changed=${this.onQueryChanged}
         @filter-changed=${this.onFilterChanged}
+        @bookmark-added=${this.onBookmarkAdded}
       ></library-bookmarks-header-controls>
       <library-bookmarks-listing
         ?show-author=${this.category !== 'your'}
@@ -50,6 +51,10 @@ class Bookmarks extends LitElement {
 
   onFilterChanged (e) {
     this.filter = e.detail.filter
+  }
+
+  onBookmarkAdded (e) {
+    this.shadowRoot.querySelector('library-bookmarks-listing').load()
   }
 }
 

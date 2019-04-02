@@ -3,6 +3,7 @@ import { classMap } from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-html/
 import { profiles, bookmarks } from '../../tmp-beaker.js'
 import { Table } from '/vendor/beaker-app-stdlib/js/com/table.js'
 import { timeDifference } from '/vendor/beaker-app-stdlib/js/time.js'
+import { BeakerEditBookmarkPopup } from '/vendor/beaker-app-stdlib/js/com/popups/edit-bookmark.js'
 import * as contextMenu from '/vendor/beaker-app-stdlib/js/com/context-menu.js'
 import * as toast from '/vendor/beaker-app-stdlib/js/com/toast.js'
 import { writeToClipboard } from '/vendor/beaker-app-stdlib/js/clipboard.js'
