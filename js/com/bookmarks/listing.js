@@ -2,6 +2,7 @@ import { html } from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-element.j
 import { classMap } from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-html/directives/class-map.js'
 import { profiles, bookmarks } from '../../tmp-beaker.js'
 import { Table } from '/vendor/beaker-app-stdlib/js/com/table.js'
+import { timeDifference } from '/vendor/beaker-app-stdlib/js/time.js'
 import * as contextMenu from '/vendor/beaker-app-stdlib/js/com/context-menu.js'
 import * as toast from '/vendor/beaker-app-stdlib/js/com/toast.js'
 import { writeToClipboard } from '/vendor/beaker-app-stdlib/js/clipboard.js'
@@ -15,7 +16,7 @@ class BookmarksListing extends Table {
       rows: {type: Array},
       category: {type: String},
       filter: {type: String},
-      showExtended: {type: Boolean, attribute: 'show-extended'},
+      showAuthor: {type: Boolean, attribute: 'show-author'},
       searchQuery: {attribute: 'search-query', reflect: true}
     }
   }
@@ -23,16 +24,15 @@ class BookmarksListing extends Table {
   constructor () {
     super()
 
-    this.showExtended = false
+    this.showAuthor = false
     this.bookmarks = []
     this.searchQuery = ''
   }
 
   get columns () {
     return [
-      {id: 'visibility', width: 26, renderer: 'renderRowVisibility'},
-      {id: 'favicon', width: 30, renderer: 'renderRowFavicon'},
-      {id: 'title', flex: 1, renderer: 'renderRowTitle'},
+      // {id: 'favicon', width: 32, renderer: 'renderRowFavicon'},
+      {id: 'info', flex: 1, renderer: 'renderRowInfo'},
       {id: 'buttons', width: 75, renderer: 'renderRowButtons'},
       {id: 'pinned', width: 30, renderer: 'renderRowPinned'}
     ]
@@ -83,9 +83,11 @@ class BookmarksListing extends Table {
       }
       case 'network':
         this.bookmarks = await bookmarks.query({filters: {isPublic: true}})
+        this.bookmarks.sort(sortByTimestamp)
         break
       default:
         this.bookmarks = await bookmarks.query({filters: {authors: this.category, isPublic: true}})
+        this.bookmarks.sort(sortByTimestamp)
         break
     }
     console.log(this.bookmarks)
@@ -120,30 +122,34 @@ class BookmarksListing extends Table {
       </a>
     `
   }
-
-  renderRowVisibility (row) {
-    if (row.isPublic) {
-      return html`<img src="${row.author.url}/thumb" title="${row.author.title}">`
-    }
-    return html`<span class="fas fa-fw fa-lock"></span>`
-  }
-
+  
   renderRowFavicon (row) {
     return html`<img class="favicon" src="beaker-favicon:32,${row.href}">`
   }
 
-  renderRowTitle (row) {
-    var titleEl = html`<a class="link" href="${row.href}">${row.title || html`<em>Untitled</em>`}</a>`
-    if (this.showExtended) {
-      return html`
-        <div class="extended-info">
-          <div class="title-line">${titleEl}</div>
-          ${row.description ? html`<div class="description-line">${row.description}</div>` : ''}
-          ${Array.isArray(row.tags) && row.tags.length ? html`<div class="tags-line">${row.tags.map(t => html`<span>${t}</span>`)}</div>` : ''}
+  renderRowInfo (row) {
+    var authorEl = ''
+    if (this.showAuthor) {
+      authorEl =  html`
+        <div class="author-line">
+          <span class="fa fa-star"></span> by
+          <a href="${row.author.url}">${row.author.title}</a>
+          <span class="bookmark-date">${timeDifference(row.createdAt)}</span>
         </div>
       `
     }
-    return titleEl
+    return html`
+      <div class="title-line">
+        <img class="favicon" src="beaker-favicon:32,${row.href}">
+        <a class="link" href="${row.href}">${row.title || html`<em>Untitled</em>`}</a>
+      </div>
+      ${authorEl}
+      ${row.description ? html`<div class="description-line">${row.description}</div>` : ''}
+      <div style="display: flex">
+        <div class="url-line">${row.href}</div>
+        ${Array.isArray(row.tags) && row.tags.length ? html`<div class="tags-line">${row.tags.map(t => html`<span>${t}</span>`)}</div>` : ''}
+      </div>
+    `
   }
 
   renderRowButtons (row) {
@@ -266,3 +272,7 @@ class BookmarksListing extends Table {
 }
 BookmarksListing.styles = [tableCSS, bookmarksListingCSS]
 customElements.define('library-bookmarks-listing', BookmarksListing)
+
+function sortByTimestamp (a, b) {
+  return b.createdAt - a.createdAt
+}

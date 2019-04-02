@@ -33,7 +33,7 @@ class Bookmarks extends LitElement {
         @filter-changed=${this.onFilterChanged}
       ></library-bookmarks-header-controls>
       <library-bookmarks-listing
-        show-extended
+        ?show-author=${this.category !== 'your'}
         category="${this.category}"
         filter="${this.filter}"
         search-query="${this.searchQuery}"

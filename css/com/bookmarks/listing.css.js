@@ -13,12 +13,16 @@ ${tooltipCSS}
 }
 
 .favicon {
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+  position: relative;
+  top: -2px;
+  margin-right: 2px;
 }
 
 .row {
-  padding: 20px;
+  padding: 20px 24px;
   width: 100%;
   height: auto;
   min-height: 50px;
@@ -63,22 +67,20 @@ ${tooltipCSS}
   color: rgba(0,0,0,.5);
 }
 
-.row .visibility {
-  color: #bbb;
-}
-
-.row .visibility img {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  object-fit: cover;
+.col.info > div + div {
+  margin-top: 6px;
 }
 
 .title-line,
 .description-line {
-  margin-bottom: 6px;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.author-line,
+.tags-line {
+  color: gray;
+  font-size: 12px;
 }
 
 .title-line {
@@ -92,14 +94,12 @@ ${tooltipCSS}
   white-space: normal;
 }
 
-.tags-line span {
+.url-line {
   color: green;
-  margin-right: 7px;
-  font-size: 10px;
 }
 
-.extended-info > :last-child {
-  margin-bottom: 0;
+.tags-line span {
+  margin-left: 5px;
 }
 `
 export default cssStr

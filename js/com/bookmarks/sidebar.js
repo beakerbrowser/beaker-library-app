@@ -31,7 +31,7 @@ class Sidebar extends LitElement {
       <div class="nav">
         ${this.renderNavItem('your', html`<span class="fas fa-fw fa-star"></span> Your bookmarks`)}
         <h5>Shared</h5>
-        ${this.renderNavItem('network', html`<span class="fas fa-fw fa-globe"></span> All in your network`)}
+        ${this.renderNavItem('network', html`<span class="fas fa-fw fa-globe"></span> From your network`)}
         ${repeat(this.users, u => u, user => this.renderNavItem(user.url, html`<img class="thumb" src="${user.url}/thumb"> ${user.title}`))}
       </div>
     `
