@@ -3,6 +3,27 @@ import * as contextMenu from '/vendor/beaker-app-stdlib/js/com/context-menu.js'
 import headerControlsCSS from '../../../css/com/header-controls.css.js'
 
 class BookmarksHeaderControls extends LitElement {
+  static get properties() {
+    return {
+      category: {type: String},
+      filter: {type: String}
+    }
+  }
+
+  constructor () {
+    super()
+    this.filter = null
+  }
+
+  get filterLabel () {
+    switch (this.filter) {
+      case 'pinned': return 'Pinned'
+      case 'public': return 'Public'
+      case 'private': return 'Private'
+      default: return 'None'
+    }
+  }
+
   render () {
     return html`
       <link rel="stylesheet" href="/vendor/beaker-app-stdlib/css/fontawesome.css">
@@ -11,11 +32,14 @@ class BookmarksHeaderControls extends LitElement {
         <i class="fa fa-search"></i>
       </div>
       <div class="actions">
-        <div class="dropdown toggleable-container">
-          <button class="btn thick toggleable" @click=${this.onClickFilter}>
-            <strong>Filter:</strong> None <span class="fas fa-caret-down"></span>
-          </button>
-        </div>
+        ${this.category === 'your'
+          ? html`
+            <div class="dropdown toggleable-container">
+              <button class="btn thick toggleable" @click=${this.onClickFilter}>
+                <strong>Filter:</strong> ${this.filterLabel} <span class="fas fa-caret-down"></span>
+              </button>
+            </div>
+          ` : ''}
         <div class="dropdown toggleable-container">
           <button class="btn primary thick toggleable" @click=${this.onClickNew}>
             <span class="fas fa-star"></span> New
@@ -28,7 +52,7 @@ class BookmarksHeaderControls extends LitElement {
   onClickFilter (e) {
     e.preventDefault()
     e.stopPropagation()
-    const goto = (url) => { window.location = url }
+    const emitSetFilter = filter => this.dispatchEvent(new CustomEvent('filter-changed', {detail: {filter}}))
     contextMenu.create({
       x: e.currentTarget.getBoundingClientRect().right,
       y: e.currentTarget.getBoundingClientRect().bottom,
@@ -38,10 +62,10 @@ class BookmarksHeaderControls extends LitElement {
       roomy: true,
       style: 'padding: 4px 0; min-width: 160px; font-size: 14px; color: #000',
       items: [
-        {icon: false, label: 'None', click: () => goto('/?new')},
-        {icon: false, label: 'Pinned', click: () => goto('/?new')},
-        {icon: false, label: 'Public', click: () => goto('/?new')},
-        {icon: false, label: 'Private', click: () => goto('/?new')}
+        {icon: false, label: 'None', click: () => emitSetFilter(null)},
+        {icon: false, label: 'Pinned', click: () => emitSetFilter('pinned')},
+        {icon: false, label: 'Public', click: () => emitSetFilter('public')},
+        {icon: false, label: 'Private', click: () => emitSetFilter('private')}
       ]
     })
   }

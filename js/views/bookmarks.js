@@ -6,6 +6,7 @@ class Bookmarks extends LitElement {
   static get properties() {
     return {
       category: {type: String},
+      filter: {type: String},
       searchQuery: {type: String},
       selectedUrls: {type: Array}
     }
@@ -14,6 +15,7 @@ class Bookmarks extends LitElement {
   constructor () {
     super()
     this.category = 'your'
+    this.filter = null
     this.searchQuery = ''
     this.selectedUrls = []
   }
@@ -25,11 +27,15 @@ class Bookmarks extends LitElement {
     let hasSelection = this.selectedUrls.length > 0
     return html`
       <library-bookmarks-header-controls
+        category="${this.category}"
+        filter="${this.filter}"
         @query-changed=${this.onQueryChanged}
+        @filter-changed=${this.onFilterChanged}
       ></library-bookmarks-header-controls>
       <library-bookmarks-listing
         show-extended
         category="${this.category}"
+        filter="${this.filter}"
         search-query="${this.searchQuery}"
       ></library-bookmarks-listing>
     `
@@ -40,6 +46,10 @@ class Bookmarks extends LitElement {
 
   onQueryChanged (e) {
     this.searchQuery = e.detail.query
+  }
+
+  onFilterChanged (e) {
+    this.filter = e.detail.filter
   }
 }
 

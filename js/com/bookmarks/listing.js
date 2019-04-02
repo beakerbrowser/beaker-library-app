@@ -14,6 +14,7 @@ class BookmarksListing extends Table {
     return { 
       rows: {type: Array},
       category: {type: String},
+      filter: {type: String},
       showExtended: {type: Boolean, attribute: 'show-extended'},
       searchQuery: {attribute: 'search-query', reflect: true}
     }
@@ -72,11 +73,14 @@ class BookmarksListing extends Table {
     var user = await profiles.getCurrentUser()
     switch (this.category) {
       case 'your':
-        this.bookmarks = await bookmarks.query({filters: {authors: user.url}})
+      {
+        let filters = {authors: user.url}
+        if (this.filter === 'pinned') filters.pinned = true
+        if (this.filter === 'public') filters.isPublic = true
+        if (this.filter === 'private') filters.isPublic = false
+        this.bookmarks = await bookmarks.query({filters})
         break
-      case 'pinned':
-        this.bookmarks = await bookmarks.query({filters: {pinned: true}})
-        break
+      }
       case 'network':
         this.bookmarks = await bookmarks.query({filters: {isPublic: true}})
         break
@@ -157,8 +161,9 @@ class BookmarksListing extends Table {
 
   attributeChangedCallback (name, oldval, newval) {
     super.attributeChangedCallback(name, oldval, newval)
-    if (name === 'category' && newval) {
+    if ((name === 'category' || name === 'filter') && newval) {
       // trigger a load when we change categories
+      console.log('loading')
       this.load()
     }
   }
