@@ -63,5 +63,16 @@ hr {
   margin-right: 3px;
   margin-left: -3px;
 }
+
+img.thumb {
+  margin-right: 3px;
+  margin-left: -3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  object-fit: cover;
+  position: relative;
+  top: 3px;
+}
 `
 export default cssStr
