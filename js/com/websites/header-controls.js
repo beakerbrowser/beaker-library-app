@@ -94,7 +94,7 @@ class WebsitesHeaderControls extends LitElement {
       noBorders: true,
       roomy: true,
       style: 'padding: 4px 0; min-width: 160px; font-size: 14px; color: #000',
-      items: [{icon: false, label: 'Website', click: () => goto('/?new')}]
+      items: [{icon: false, label: 'Website', click: () => goto('/?view=new-website')}]
     })
   }
 

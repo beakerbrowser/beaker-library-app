@@ -95,7 +95,7 @@ class Library extends LitElement {
             category="${this.category}"
           ></library-view-addressbook>
         `
-      case 'new':
+      case 'new-website':
         return html`
           <library-view-new-website></library-view-new-website>
         `
