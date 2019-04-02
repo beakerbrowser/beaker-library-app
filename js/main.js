@@ -1,4 +1,5 @@
 import { LitElement, css, html } from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-element.js'
+import * as QP from './lib/query-params.js'
 import './com/header-nav.js'
 import './com/sidebar.js'
 import './com/addressbook/sidebar.js'
@@ -25,16 +26,8 @@ class Library extends LitElement {
 
   constructor () {
     super()
-    this.view = ''
-    this.category = ''
-
-    let urlp = new URL(window.location)
-    if (urlp.searchParams.has('new')) {
-      this.view = 'new'
-    } else {
-      this.view = 'addressbook'
-      this.category = urlp.searchParams.get('category') || DEFAULT_CATEGORIES[this.view]
-    }
+    this.view = QP.getParam('view', 'addressbook')
+    this.category = QP.getParam('category', DEFAULT_CATEGORIES[this.view])
   }
 
   // rendering
@@ -126,11 +119,12 @@ class Library extends LitElement {
   onSetView (e) {
     this.view = e.detail.tab
     this.category = DEFAULT_CATEGORIES[this.view]
+    QP.setParams({view: this.view, category: null})
   }
 
   onSetCategory (e) {
     this.category = e.detail.category
-    history.replaceState({}, '', '/')
+    QP.setParams({category: this.category})
   }
 }
 Library.styles = css`
