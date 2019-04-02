@@ -11,65 +11,69 @@ const LOAD_LIMIT = 50
 class AddressbookListing extends LitElement {
   static get properties () {
     return {
-      profiles: {type: Array},
+      users: {type: Array},
       category: {type: String}
     }
   }
 
   constructor () {
     super()
-    this.profiles = null
+    this.users = null
   }
 
   // data management
   // =
 
   async load () {
-    let self = await profiles.getCurrentUser()
+    var self = await profiles.getCurrentUser()
+    var users
     if (this.category === 'followers') {
-      this.profiles = await graph.listFollowers(self.url)
+      users = await graph.listFollowers(self.url)
     } else {
-      this.profiles = await graph.listFollows(self.url)
+      users = await graph.listFollows(self.url)
     }
-    await Promise.all(this.profiles.map(async (profile) => {
+    users = [self].concat(users)
+    await Promise.all(users.map(async (user) => {
       var [isFollowed, isFollowingYou, followers] = await Promise.all([
-        graph.isAFollowingB(self.url, profile.url),
-        graph.isAFollowingB(profile.url, self.url),
-        graph.listFollowers(profile.url, {filters: {followedBy: self.url}})
+        graph.isAFollowingB(self.url, user.url),
+        graph.isAFollowingB(user.url, self.url),
+        graph.listFollowers(user.url, {filters: {followedBy: self.url}})
       ])
-      profile.isYou = profile.url === this.userUrl
-      profile.isFollowed = isFollowed
-      profile.isFollowingYou = isFollowingYou
-      profile.followers = followers.filter(f => f.url !== self.url).slice(0, 6)
+      user.isYou = user.url === self.url
+      user.isFollowed = isFollowed
+      user.isFollowingYou = isFollowingYou
+      user.followers = followers.filter(f => f.url !== self.url).slice(0, 6)
     }))
+    this.users = users
   }
 
   // rendering
   // =
 
   render () {
-    if (!this.profiles) {
+    if (!this.users) {
       return html`
         <div class="empty">Loading...</div>
       `
     }
-    if (this.profiles.length === 0) {
+    if (this.users.length === 0) {
       return html`
         <div class="empty">This user ${this.showFollowers ? 'has no known followers' : 'is not following anybody'}.</div>
       `
     }
     const keyFn = p => p.url + p.isFollowed // include .isFollowed to force a render on change
     return html`
-      ${repeat(this.profiles, keyFn, profile => html`
-        <beaker-profile-info-card
-          .user=${profile}
-          show-controls
-          view-profile-base-url="/profile/"
-          fontawesome-src="/vendor/beaker-app-stdlib/css/fontawesome.css"
-          @follow=${this.onFollow}
-          @unfollow=${this.onUnfollow}
-        ></beaker-profile-info-card>
-      `)}
+      ${repeat(this.users, keyFn, user => html`
+        <div>
+          <beaker-profile-info-card
+            .user=${user}
+            show-controls
+            fontawesome-src="/vendor/beaker-app-stdlib/css/fontawesome.css"
+            @follow=${this.onFollow}
+            @unfollow=${this.onUnfollow}
+            @edit-profile=${this.onEditProfile}
+          ></beaker-profile-info-card>
+        </div>`)}
     `
   }
 
@@ -87,15 +91,19 @@ class AddressbookListing extends LitElement {
   async onFollow (e) {
     await graph.follow(e.detail.url)
     toast.create(`Followed ${e.detail.title}`, '', 1e3)
-    this.profiles.find(f => f.url === e.detail.url).isFollowed = true
+    this.users.find(f => f.url === e.detail.url).isFollowed = true
     this.requestUpdate()
   }
 
   async onUnfollow (e) {
     await graph.unfollow(e.detail.url)
     toast.create(`Unfollowed ${e.detail.title}`, '', 1e3)
-    this.profiles.find(f => f.url === e.detail.url).isFollowed = false
+    this.users.find(f => f.url === e.detail.url).isFollowed = false
     await this.requestUpdate()
+  }
+
+  async onEditProfile (e) {
+    window.location = 'beaker://settings/'
   }
 }
 AddressbookListing.styles = profileFollowgraphCSS
