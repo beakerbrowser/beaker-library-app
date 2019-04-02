@@ -43,7 +43,7 @@ class WebsitesHeaderControls extends LitElement {
       <div class="actions">
         <div class="dropdown toggleable-container">
           <button class="btn primary thick toggleable" @click=${this.onClickNew}>
-            <span class="fas fa-file"></span> New <span class="fas fa-caret-down"></span>
+            <span class="fas fa-sitemap"></span> New <span class="fas fa-caret-down"></span>
           </button>
         </div>
       </div>
