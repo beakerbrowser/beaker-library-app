@@ -12,7 +12,8 @@ class AddressbookListing extends LitElement {
   static get properties () {
     return {
       users: {type: Array},
-      category: {type: String}
+      category: {type: String},
+      searchQuery: {attribute: 'search-query'}
     }
   }
 
@@ -61,9 +62,21 @@ class AddressbookListing extends LitElement {
         <div class="empty">This user ${this.showFollowers ? 'has no known followers' : 'is not following anybody'}.</div>
       `
     }
+    var users = this.users
+    if (this.searchQuery) {
+      users = this.users.filter(user => {
+        if (user.title && user.title.toLowerCase().includes(this.searchQuery)) {
+          return true
+        } else if (user.description && user.description.toLowerCase().includes(this.searchQuery)) {
+          return true
+        } else if (user.url && user.url.toLowerCase().includes(this.searchQuery)) {
+          return true
+        }
+      })
+    }
     const keyFn = p => p.url + p.isFollowed // include .isFollowed to force a render on change
     return html`
-      ${repeat(this.users, keyFn, user => html`
+      ${repeat(users, keyFn, user => html`
         <div>
           <beaker-profile-info-card
             .user=${user}

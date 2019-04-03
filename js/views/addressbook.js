@@ -1,12 +1,12 @@
 import { LitElement, html } from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-element.js'
+import '../com/addressbook/header-controls.js'
 import '../com/addressbook/listing.js'
 
 class AddressBook extends LitElement {
   static get properties() {
     return {
       category: {type: String},
-      searchQuery: {type: String},
-      selectedUrls: {type: Array}
+      searchQuery: {type: String}
     }
   }
 
@@ -14,15 +14,18 @@ class AddressBook extends LitElement {
     super()
     this.category = 'your'
     this.searchQuery = ''
-    this.selectedUrls = []
   }
 
   // rendering
   // =
 
   render () {
-    let hasSelection = this.selectedUrls.length > 0
     return html`
+      <library-addressbook-header-controls
+        @query-changed=${this.onQueryChanged}
+        @follow-added=${this.onFollowAdded}
+      >
+      </library-addressbook-header-controls>
       <library-addressbook-listing
         category="${this.category}"
         search-query="${this.searchQuery}"
@@ -35,6 +38,10 @@ class AddressBook extends LitElement {
 
   onQueryChanged (e) {
     this.searchQuery = e.detail.query
+  }
+
+  onFollowAdded (e) {
+    this.shadowRoot.querySelector('library-addressbook-listing').load()
   }
 }
 
