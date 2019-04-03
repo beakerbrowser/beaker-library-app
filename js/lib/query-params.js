@@ -1,5 +1,6 @@
-export function setParams (kv) {
+export function setParams (kv, clear = false) {
   var url = (new URL(window.location))
+  if (clear) url.search = ''
   for (var k in kv) {
     if (kv[k]) {
       url.searchParams.set(k, kv[k])

@@ -6,6 +6,7 @@ import { toNiceDomain } from '/vendor/beaker-app-stdlib/js/strings.js'
 class Sidebar extends LitElement {
   static get properties () {
     return {
+      site: {type: String},
       user: {type: Object}
     }
   }
@@ -15,8 +16,15 @@ class Sidebar extends LitElement {
     this.load()
   }
 
+  attributeChangedCallback (name, oldval, newval) {
+    super.attributeChangedCallback(name, oldval, newval)
+    if (name === 'site') {
+      this.load()
+    }
+  }
+
   async load () {
-    this.user = await profiles.getCurrentUser()
+    this.user = this.site ? await profiles.get(this.site) : await profiles.getCurrentUser()
   }
 
   render() {

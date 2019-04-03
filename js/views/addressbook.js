@@ -6,6 +6,7 @@ class AddressBook extends LitElement {
   static get properties() {
     return {
       category: {type: String},
+      site: {type: String},
       searchQuery: {type: String}
     }
   }
@@ -13,6 +14,7 @@ class AddressBook extends LitElement {
   constructor () {
     super()
     this.category = 'your'
+    this.site = ''
     this.searchQuery = ''
   }
 
@@ -28,6 +30,7 @@ class AddressBook extends LitElement {
       </library-addressbook-header-controls>
       <library-addressbook-listing
         category="${this.category}"
+        site="${this.site}"
         search-query="${this.searchQuery}"
       ></library-addressbook-listing>
     `

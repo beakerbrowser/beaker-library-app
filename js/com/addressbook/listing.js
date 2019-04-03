@@ -13,6 +13,7 @@ class AddressbookListing extends LitElement {
     return {
       users: {type: Array},
       category: {type: String},
+      site: {type: String},
       searchQuery: {attribute: 'search-query'}
     }
   }
@@ -29,11 +30,11 @@ class AddressbookListing extends LitElement {
     var self = await profiles.getCurrentUser()
     var users
     if (this.category === 'followers') {
-      users = await graph.listFollowers(self.url)
+      users = await graph.listFollowers(this.site ? this.site : self.url)
     } else {
-      users = await graph.listFollows(self.url)
+      users = await graph.listFollows(this.site ? this.site : self.url)
     }
-    users = [self].concat(users)
+    if (!this.site) users = [self].concat(users)
     await Promise.all(users.map(async (user) => {
       var [isFollowed, isFollowingYou, followers] = await Promise.all([
         graph.isAFollowingB(self.url, user.url),
@@ -81,7 +82,7 @@ class AddressbookListing extends LitElement {
           <beaker-profile-info-card
             .user=${user}
             show-controls
-            view-profile-base-url=""
+            view-profile-base-url="/?view=addressbook&site="
             fontawesome-src="/vendor/beaker-app-stdlib/css/fontawesome.css"
             @follow=${this.onFollow}
             @unfollow=${this.onUnfollow}
@@ -96,7 +97,7 @@ class AddressbookListing extends LitElement {
 
   attributeChangedCallback (name, oldval, newval) {
     super.attributeChangedCallback(name, oldval, newval)
-    if (name === 'category' && newval) {
+    if (name === 'site' || (name === 'category' && newval)) {
       // trigger a load when we change categories
       this.load()
     }

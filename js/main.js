@@ -20,7 +20,8 @@ class Library extends LitElement {
   static get properties() {
     return {
       view: {type: String},
-      category: {type: String}
+      category: {type: String},
+      site: {type: String}
     }
   }
 
@@ -28,6 +29,7 @@ class Library extends LitElement {
     super()
     this.view = QP.getParam('view', 'addressbook')
     this.category = QP.getParam('category', DEFAULT_CATEGORIES[this.view])
+    this.site = QP.getParam('site', '')
   }
 
   // rendering
@@ -37,7 +39,7 @@ class Library extends LitElement {
     return html`
       <nav>
         <div class="content">
-          <library-sidebar></library-sidebar>
+          <library-sidebar site="${this.site}"></library-sidebar>
           ${this.renderSidebar()}
         </div>
       </nav>
@@ -93,6 +95,7 @@ class Library extends LitElement {
           ></header-nav>
           <library-view-addressbook
             category="${this.category}"
+            site="${this.site}"
           ></library-view-addressbook>
         `
       case 'new-website':
@@ -108,6 +111,7 @@ class Library extends LitElement {
           ></header-nav>
           <library-view-websites
             category="${this.category}"
+            site="${this.site}"
           ></library-view-websites>
         `
     }
@@ -119,7 +123,8 @@ class Library extends LitElement {
   onSetView (e) {
     this.view = e.detail.tab
     this.category = DEFAULT_CATEGORIES[this.view]
-    QP.setParams({view: this.view, category: null})
+    this.site = ''
+    QP.setParams({view: this.view}, true)
   }
 
   onSetCategory (e) {
