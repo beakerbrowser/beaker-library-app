@@ -104,7 +104,7 @@ class AddressbookListing extends LitElement {
   }
 
   async onEditProfile (e) {
-    window.location = 'beaker://settings/#profile'
+    window.location = 'beaker://settings/'
   }
 }
 AddressbookListing.styles = profileFollowgraphCSS
