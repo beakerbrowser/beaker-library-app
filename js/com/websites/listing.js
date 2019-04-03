@@ -32,7 +32,6 @@ class WebsitesListing extends Table {
 
   get columns () {
     return [
-      {id: 'thumb', renderer: 'renderRowThumb'},
       {id: 'title', flex: 4, renderer: 'renderRowTitle'},
       {id: 'size', width: 70, renderer: 'renderRowSize'}
     ]
@@ -141,19 +140,21 @@ class WebsitesListing extends Table {
   // rendering
   // =
 
-  renderRowThumb (row) {
-    return html`<img class="favicon" slot="img2" src="beaker-favicon:32,${row.url}">`
-    // return html`
-    //   <beaker-img-fallbacks>
-    //     <img class="thumb" slot="img1" src="${row.url}/thumb">
-    //     <img class="favicon" slot="img2" src="beaker-favicon:32,${row.url}">
-    //   </beaker-img-fallbacks>
-    // `
-  }
+  // renderRowThumb (row) {
+  //   return html`
+  //     <beaker-img-fallbacks>
+  //       <img class="thumb" slot="img1" src="${row.url}/thumb">
+  //       <img class="favicon" slot="img2" src="beaker-favicon:32,${row.url}">
+  //     </beaker-img-fallbacks>
+  //   `
+  // }
 
   renderRowTitle (row) {
     return html`
-      <div class="title-line"><a href="${row.url}">${row.title || html`<em>Untitled</em>`}</a></div>
+      <div class="title-line">
+        <img class="favicon" src="beaker-favicon:32,${row.url}">
+        <a href="${row.url}">${row.title || html`<em>Untitled</em>`}</a>
+      </div>
       ${row.description ? html`<div class="description-line">${row.description}</div>` : ''}
       ${row.localPath ? html`<div class="local-path-line">${row.localPath}</div>` : ''}
       <div class="meta-line">

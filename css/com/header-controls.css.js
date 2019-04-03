@@ -9,7 +9,6 @@ ${searchInputCSS}
 :host {
   display: flex;
   padding: 10px 0 12px;
-  background: #f7f7f7;
 }
 
 .search-container {
@@ -21,6 +20,8 @@ ${searchInputCSS}
 input.search {
   height: 35px;
   font-size: 14px;
+  background: #eee;
+  border: 0;
 }
 
 .actions {
@@ -30,10 +31,6 @@ input.search {
 
 .actions > * {
   margin-left: 5px;
-}
-
-.btn {
-  border-color: #ccc;
 }
 `
 export default cssStr

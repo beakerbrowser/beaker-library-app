@@ -18,18 +18,13 @@ ${commonCSS}
   color: rgba(0,0,0,.5);
 }
 
-img.favicon {
-  max-width: 20px;
-  height: 20px;
-  margin-right: 8px;
-}
-
-img.thumb {
-  max-width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-right: 10px;
+.favicon {
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+  position: relative;
+  top: -1px;
+  margin-right: 2px;
 }
 
 .title-line,
@@ -60,9 +55,7 @@ img.thumb {
 }
 
 .local-path-line {
-  background: #f5f5f6;
-  padding: 3px 6px;
-  border-radius: 3px;
+  padding: 3px 0;
   font-size: 11px;
   font-weight: 500;
   display: inline-block;

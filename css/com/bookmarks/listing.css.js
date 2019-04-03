@@ -23,14 +23,8 @@ ${tooltipCSS}
 
 .row {
   padding: 14px;
-  background: transparent;
-  border: 0;
   height: auto;
   min-height: 50px;
-}
-
-.row:hover {
-  background: #fff;
 }
 
 .col.pinned {
