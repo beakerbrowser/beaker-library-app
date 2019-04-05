@@ -35,7 +35,7 @@ class WebsitesHeaderControls extends LitElement {
     if (this.site) return ''
     if (this.hasSelection || this.category === 'trash') {
       return this.renderSelectionActions()
-    } else {
+    } else if (this.category === 'your') {
       return this.renderStandardActions()
     }
   }

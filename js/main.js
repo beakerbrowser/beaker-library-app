@@ -71,7 +71,7 @@ class Library extends LitElement {
       case 'websites':
         return html`
           <library-view-websites
-            category="${this.category}"
+            category="${['trash', 'seeding'].includes(this.view) ? this.view : 'your'}"
             site="${this.site}"
           ></library-view-websites>
         `
