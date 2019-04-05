@@ -19,6 +19,7 @@ class ViewedSiteHeader extends LitElement {
   }
 
   async load () {
+    if (!this.url) return
     var user = await profiles.getCurrentUser()
     var site = await profiles.index(this.url)
     var [isFollowed, isFollowingYou] = await Promise.all([

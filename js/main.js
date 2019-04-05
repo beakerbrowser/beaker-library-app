@@ -28,6 +28,21 @@ class Library extends LitElement {
     this.category = QP.getParam('category', DEFAULT_CATEGORIES[this.view])
     this.site = QP.getParam('site', '')
     window.addEventListener('popstate', this.onPopState.bind(this))
+
+    if (this.site) {
+      this.resolveSite()
+    }
+  }
+
+  async resolveSite () {
+    if (this.site.startsWith('dat://')) {
+      var url = new URL(this.site)
+      // if not a raw url, resolve and update
+      if (url.hostname.length !== '64') {
+        this.site = `dat://${await DatArchive.resolveName(this.site)}`
+        QP.setParams({site: this.site})
+      }
+    }
   }
 
   // rendering
