@@ -6,6 +6,7 @@ class WebsitesHeaderControls extends LitElement {
   static get properties () {
     return {
       category: {type: String},
+      site: {type: String},
       hasSelection: {type: Boolean, attribute: 'has-selection', reflect: true}
     }
   }
@@ -31,6 +32,7 @@ class WebsitesHeaderControls extends LitElement {
   }
 
   renderActions () {
+    if (this.site) return ''
     if (this.hasSelection || this.category === 'trash') {
       return this.renderSelectionActions()
     } else {

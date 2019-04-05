@@ -8,6 +8,7 @@ class Websites extends LitElement {
   static get properties() {
     return {
       category: {type: String},
+      site: {type: String},
       searchQuery: {type: String},
       selectedUrls: {type: Array}
     }
@@ -91,6 +92,7 @@ class Websites extends LitElement {
       <library-websites-header-controls
         ?has-selection=${hasSelection}
         category="${this.category}"
+        site="${this.site}"
         @query-changed=${this.onQueryChanged}
         @select-all=${this.onSelectAll}
         @deselect-all=${this.onDeselectAll}

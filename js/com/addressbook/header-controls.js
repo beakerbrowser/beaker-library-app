@@ -4,6 +4,12 @@ import * as toast from '/vendor/beaker-app-stdlib/js/com/toast.js'
 import headerControlsCSS from '../../../css/com/header-controls.css.js'
 
 class AddressbookHeaderControls extends LitElement {
+  static get properties() {
+    return {
+      site: {type: String}
+    }
+  }
+
   render () {
     return html`
       <link rel="stylesheet" href="/vendor/beaker-app-stdlib/css/fontawesome.css">
@@ -11,13 +17,15 @@ class AddressbookHeaderControls extends LitElement {
         <input placeholder="Find a person" type="text" class="search" @keyup=${this.onKeyupSearch}>
         <i class="fa fa-search"></i>
       </div>
-      <div class="actions">
-        <div class="dropdown toggleable-container">
-          <button class="btn primary thick toggleable" @click=${this.onClickAdd}>
-            <span class="fas fa-rss"></span> Add follow
-          </button>
+      ${this.site ? '' : html`
+        <div class="actions">
+          <div class="dropdown toggleable-container">
+            <button class="btn primary thick toggleable" @click=${this.onClickAdd}>
+              <span class="fas fa-rss"></span> Add follow
+            </button>
+          </div>
         </div>
-      </div>
+      `}
     `
   }
 

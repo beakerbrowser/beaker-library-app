@@ -1,10 +1,7 @@
 import { LitElement, css, html } from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-element.js'
 import * as QP from './lib/query-params.js'
 import './com/header-nav.js'
-import './com/sidebar.js'
-import './com/addressbook/sidebar.js'
-import './com/bookmarks/sidebar.js'
-import './com/websites/sidebar.js'
+import './com/viewed-site-header.js'
 import './views/addressbook.js'
 import './views/bookmarks.js'
 import './views/websites.js'
@@ -30,6 +27,7 @@ class Library extends LitElement {
     this.view = QP.getParam('view', 'addressbook')
     this.category = QP.getParam('category', DEFAULT_CATEGORIES[this.view])
     this.site = QP.getParam('site', '')
+    window.addEventListener('popstate', this.onPopState.bind(this))
   }
 
   // rendering
@@ -37,62 +35,29 @@ class Library extends LitElement {
 
   render () {
     return html`
-      <nav>
-        <div class="content">
-          <library-sidebar site="${this.site}"></library-sidebar>
-          ${this.renderSidebar()}
-        </div>
-      </nav>
       <main>
+        ${this.site ? html`<viewed-site-header url="${this.site}"></viewed-site-header>` : ''}
+        <header-nav
+          current-tab=${this.view}
+          site=${this.site}
+          @change-tab=${this.onSetView}
+        ></header-nav>
         ${this.renderView()}
       </main>
     `
-  }
-
-  renderSidebar () {
-    switch (this.view) {
-      case 'addressbook':
-        return html`
-          <library-addressbook-sidebar
-            category="${this.category}"
-            @set-category=${this.onSetCategory}
-          ></library-addressbook-sidebar>
-        `
-      case 'websites':
-        return html`
-          <library-websites-sidebar
-            category="${this.category}"
-            @set-category=${this.onSetCategory}
-          ></library-websites-sidebar>
-        `
-      case 'bookmarks':
-        return html`
-          <library-bookmarks-sidebar
-            category="${this.category}"
-            @set-category=${this.onSetCategory}
-          ></library-bookmarks-sidebar>
-        `
-    }
   }
 
   renderView () {
     switch (this.view) {
       case 'bookmarks':
         return html`
-          <header-nav
-            current-tab=${this.view}
-            @change-tab=${this.onSetView}
-          ></header-nav>
           <library-view-bookmarks
             category="${this.category}"
+            site="${this.site}"
           ></library-view-bookmarks>
         `
       case 'addressbook':
         return html`
-          <header-nav
-            current-tab=${this.view}
-            @change-tab=${this.onSetView}
-          ></header-nav>
           <library-view-addressbook
             category="${this.category}"
             site="${this.site}"
@@ -105,10 +70,6 @@ class Library extends LitElement {
       default:
       case 'websites':
         return html`
-          <header-nav
-            current-tab=${this.view}
-            @change-tab=${this.onSetView}
-          ></header-nav>
           <library-view-websites
             category="${this.category}"
             site="${this.site}"
@@ -123,19 +84,24 @@ class Library extends LitElement {
   onSetView (e) {
     this.view = e.detail.tab
     this.category = DEFAULT_CATEGORIES[this.view]
-    this.site = ''
-    QP.setParams({view: this.view}, true)
+    QP.setParams({view: this.view, category: false})
   }
 
   onSetCategory (e) {
     this.category = e.detail.category
     QP.setParams({category: this.category})
   }
+
+  onPopState (e) {
+    this.view = QP.getParam('view')
+    this.category = QP.getParam('category') || DEFAULT_CATEGORIES[this.view]
+    this.user = QP.getParam('user')
+  }
 }
 Library.styles = css`
 :host {
   display: flex;
-  width: 1040px;
+  width: 810px;
   margin: 0 auto 100px;
 }
 

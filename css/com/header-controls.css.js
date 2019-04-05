@@ -14,7 +14,7 @@ ${searchInputCSS}
 .search-container {
   position: relative;
   flex: 1;
-  margin-right: 8px;
+  height: 35px;
 }
 
 input.search {
@@ -27,6 +27,7 @@ input.search {
 .actions {
   display: flex;
   align-items: center;
+  margin-left: 8px;
 }
 
 .actions > * {

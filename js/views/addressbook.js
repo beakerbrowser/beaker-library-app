@@ -24,6 +24,7 @@ class AddressBook extends LitElement {
   render () {
     return html`
       <library-addressbook-header-controls
+        site="${this.site}"
         @query-changed=${this.onQueryChanged}
         @follow-added=${this.onFollowAdded}
       >

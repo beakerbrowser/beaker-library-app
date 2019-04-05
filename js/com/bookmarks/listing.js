@@ -15,7 +15,7 @@ class BookmarksListing extends Table {
   static get properties() {
     return { 
       rows: {type: Array},
-      category: {type: String},
+      site: {type: String},
       filter: {type: String},
       showAuthor: {type: Boolean, attribute: 'show-author'},
       searchQuery: {attribute: 'search-query', reflect: true}
@@ -68,28 +68,16 @@ class BookmarksListing extends Table {
   // =
 
   async load () {
-    if (!this.category) {
-      return
-    }
     var user = await profiles.getCurrentUser()
-    switch (this.category) {
-      case 'your':
-      {
-        let filters = {authors: user.url}
-        if (this.filter === 'pinned') filters.pinned = true
-        if (this.filter === 'public') filters.isPublic = true
-        if (this.filter === 'private') filters.isPublic = false
-        this.bookmarks = await bookmarks.query({filters})
-        break
-      }
-      case 'network':
-        this.bookmarks = await bookmarks.query({filters: {isPublic: true}})
-        this.bookmarks.sort(sortByTimestamp)
-        break
-      default:
-        this.bookmarks = await bookmarks.query({filters: {authors: this.category, isPublic: true}})
-        this.bookmarks.sort(sortByTimestamp)
-        break
+    if (!this.site) {
+      let filters = {authors: user.url}
+      if (this.filter === 'pinned') filters.pinned = true
+      if (this.filter === 'public') filters.isPublic = true
+      if (this.filter === 'private') filters.isPublic = false
+      this.bookmarks = await bookmarks.query({filters})
+    } else {
+      this.bookmarks = await bookmarks.query({filters: {authors: this.site, isPublic: true}})
+      this.bookmarks.sort(sortByTimestamp)
     }
     console.log(this.bookmarks)
     this.requestUpdate()
@@ -168,9 +156,7 @@ class BookmarksListing extends Table {
 
   attributeChangedCallback (name, oldval, newval) {
     super.attributeChangedCallback(name, oldval, newval)
-    if ((name === 'category' || name === 'filter') && newval) {
-      // trigger a load when we change categories
-      console.log('loading')
+    if ((name === 'site' || name === 'filter') && newval) {
       this.load()
     }
   }

@@ -9,6 +9,7 @@ class BookmarksHeaderControls extends LitElement {
   static get properties() {
     return {
       category: {type: String},
+      site: {type: String},
       filter: {type: String}
     }
   }
@@ -34,21 +35,23 @@ class BookmarksHeaderControls extends LitElement {
         <input placeholder="Find a bookmark" type="text" class="search" @keyup=${this.onKeyupSearch}>
         <i class="fa fa-search"></i>
       </div>
-      <div class="actions">
-        ${this.category === 'your'
-          ? html`
-            <div class="dropdown toggleable-container">
-              <button class="btn thick toggleable" @click=${this.onClickFilter}>
-                <strong>Filter:</strong> ${this.filterLabel} <span class="fas fa-caret-down"></span>
-              </button>
-            </div>
-          ` : ''}
-        <div class="dropdown toggleable-container">
-          <button class="btn primary thick toggleable" @click=${this.onClickNew}>
-            <span class="fas fa-star"></span> New
-          </button>
+      ${this.site ? '' : html`
+        <div class="actions">
+          ${this.category === 'your'
+            ? html`
+              <div class="dropdown toggleable-container">
+                <button class="btn thick toggleable" @click=${this.onClickFilter}>
+                  <strong>Filter:</strong> ${this.filterLabel} <span class="fas fa-caret-down"></span>
+                </button>
+              </div>
+            ` : ''}
+          <div class="dropdown toggleable-container">
+            <button class="btn primary thick toggleable" @click=${this.onClickNew}>
+              <span class="fas fa-star"></span> New
+            </button>
+          </div>
         </div>
-      </div>
+      `}
     `
   }
 
