@@ -35,9 +35,21 @@ class NewWebsite extends LitElement {
       description: e.currentTarget.description.value,
       prompt: false
     })
+    await archive.writeFile('index.html', DEFAULT_INDEX_HTML)
     window.location = `beaker://editor/${archive.url}`
   }
 }
 NewWebsite.styles = newFormCSS
 
 customElements.define('library-view-new-website', NewWebsite)
+
+const DEFAULT_INDEX_HTML = `<!doctype html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="utf-8">
+  </head>
+  <body>
+    <!-- enter your content here -->
+  </body>
+</html>`
