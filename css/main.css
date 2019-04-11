@@ -4,3 +4,9 @@
 body {
   font-size: 13px;
 }
+
+@media (max-width: 1300px) {
+  body {
+    padding-top: 30px;
+  }
+}

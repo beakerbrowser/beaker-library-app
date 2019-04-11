@@ -1,5 +1,7 @@
 import { LitElement, css, html } from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-element.js'
 import * as QP from './lib/query-params.js'
+import { profiles } from './tmp-beaker.js'
+import '/vendor/beaker-app-stdlib/js/com/top-right-controls.js'
 import './com/header-nav.js'
 import './com/viewed-site-header.js'
 import './views/addressbook.js'
@@ -18,7 +20,8 @@ class Library extends LitElement {
     return {
       view: {type: String},
       category: {type: String},
-      site: {type: String}
+      site: {type: String},
+      user: {type: Object}
     }
   }
 
@@ -29,9 +32,14 @@ class Library extends LitElement {
     this.site = QP.getParam('site', '')
     window.addEventListener('popstate', this.onPopState.bind(this))
 
+    this.load()
     if (this.site) {
       this.resolveSite()
     }
+  }
+
+  async load () {
+    this.user = await profiles.getCurrentUser()
   }
 
   async resolveSite () {
@@ -50,6 +58,7 @@ class Library extends LitElement {
 
   render () {
     return html`
+      <beaker-top-right-controls .user=${this.user}></beaker-top-right-controls>
       <main>
         ${this.site ? html`<viewed-site-header url="${this.site}"></viewed-site-header>` : ''}
         <header-nav
