@@ -15,6 +15,12 @@ const DEFAULT_CATEGORIES = {
   websites: 'your'
 }
 
+const VIEW_TITLES = {
+  addressbook: 'Address book',
+  bookmarks: 'Bookmarks',
+  websites: 'Websites',
+}
+
 class Library extends LitElement {
   static get properties() {
     return {
@@ -31,6 +37,7 @@ class Library extends LitElement {
     this.category = QP.getParam('category', DEFAULT_CATEGORIES[this.view])
     this.site = QP.getParam('site', '')
     window.addEventListener('popstate', this.onPopState.bind(this))
+    this.setTitle()
 
     this.load()
     if (this.site) {
@@ -40,6 +47,10 @@ class Library extends LitElement {
 
   async load () {
     this.user = await profiles.getCurrentUser()
+  }
+
+  setTitle () {
+    document.title = VIEW_TITLES[this.view] || 'Library'
   }
 
   async resolveSite () {
@@ -109,6 +120,7 @@ class Library extends LitElement {
     this.view = e.detail.tab
     this.category = DEFAULT_CATEGORIES[this.view]
     QP.setParams({view: this.view, category: false})
+    this.setTitle()
   }
 
   onSetCategory (e) {
