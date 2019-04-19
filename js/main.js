@@ -1,7 +1,6 @@
 import { LitElement, css, html } from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-element.js'
 import * as QP from './lib/query-params.js'
 import { profiles } from './tmp-beaker.js'
-import '/vendor/beaker-app-stdlib/js/com/top-right-controls.js'
 import './com/header-nav.js'
 import './com/viewed-site-header.js'
 import './views/addressbook.js'
@@ -50,7 +49,8 @@ class Library extends LitElement {
   }
 
   setTitle () {
-    document.title = VIEW_TITLES[this.view] || 'Library'
+    let title = VIEW_TITLES[this.view]
+    document.title = title ? `${title} | Library` : 'Library'
   }
 
   async resolveSite () {
@@ -69,7 +69,6 @@ class Library extends LitElement {
 
   render () {
     return html`
-      <beaker-top-right-controls .user=${this.user}></beaker-top-right-controls>
       <main>
         ${this.site ? html`<viewed-site-header url="${this.site}"></viewed-site-header>` : ''}
         <header-nav

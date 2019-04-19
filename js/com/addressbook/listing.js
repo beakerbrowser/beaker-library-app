@@ -82,7 +82,6 @@ class AddressbookListing extends LitElement {
           <beaker-profile-info-card
             .user=${user}
             show-controls
-            view-profile-base-url="/?view=addressbook&site="
             fontawesome-src="/vendor/beaker-app-stdlib/css/fontawesome.css"
             @follow=${this.onFollow}
             @unfollow=${this.onUnfollow}

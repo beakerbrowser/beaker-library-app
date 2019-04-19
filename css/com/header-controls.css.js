@@ -20,7 +20,7 @@ ${searchInputCSS}
 input.search {
   height: 35px;
   font-size: 14px;
-  background: #eee;
+  background: #eeeef0;
   border: 0;
 }
 

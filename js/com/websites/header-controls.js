@@ -1,5 +1,4 @@
 import { LitElement, html } from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-element.js'
-import * as contextMenu from '/vendor/beaker-app-stdlib/js/com/context-menu.js'
 import headerControlsCSS from '../../../css/com/header-controls.css.js'
 
 class WebsitesHeaderControls extends LitElement {
@@ -44,9 +43,9 @@ class WebsitesHeaderControls extends LitElement {
     return html`
       <div class="actions">
         <div class="dropdown toggleable-container">
-          <button class="btn primary thick toggleable" @click=${this.onClickNew}>
-            <span class="fas fa-sitemap"></span> New <span class="fas fa-caret-down"></span>
-          </button>
+          <a class="btn primary thick toggleable" href="?view=new-website">
+            <span class="fas fa-sitemap"></span> New website
+          </a>
         </div>
       </div>
     `
@@ -82,22 +81,6 @@ class WebsitesHeaderControls extends LitElement {
 
   doEmit (evt) {
     return () => this.dispatchEvent(new CustomEvent(evt))
-  }
-
-  onClickNew (e) {
-    e.preventDefault()
-    e.stopPropagation()
-    const goto = (url) => { window.location = url }
-    contextMenu.create({
-      x: e.currentTarget.getBoundingClientRect().right,
-      y: e.currentTarget.getBoundingClientRect().bottom,
-      right: true,
-      withTriangle: true,
-      noBorders: true,
-      roomy: true,
-      style: 'padding: 4px 0; min-width: 160px; font-size: 14px; color: #000',
-      items: [{icon: false, label: 'Website', click: () => goto('/?view=new-website')}]
-    })
   }
 
   onKeyupSearch (e) {

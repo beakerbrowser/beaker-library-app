@@ -47,7 +47,7 @@ class BookmarksHeaderControls extends LitElement {
             ` : ''}
           <div class="dropdown toggleable-container">
             <button class="btn primary thick toggleable" @click=${this.onClickNew}>
-              <span class="fas fa-star"></span> New
+              <span class="fas fa-star"></span> New bookmark
             </button>
           </div>
         </div>
