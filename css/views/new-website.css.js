@@ -6,11 +6,16 @@ const cssStr = css`
 :host {
   display: block;
   max-width: 600px;
+  padding: 12px 20px 20px;
+  margin: 20px auto;
+  background: #fff;
+  border: 1px solid #d4d7dc;
+  border-radius: 4px;
 }
 
 h1 {
   font-weight: 500;
-  margin-bottom: 0;
+  margin: 0;
 }
 
 ${inputsCSS}
@@ -22,7 +27,7 @@ hr {
   border-top: 1px solid #ccc;
 }
 
-form > div {
+form > div:not(:last-child) {
   margin-bottom: 30px;
 }
 
