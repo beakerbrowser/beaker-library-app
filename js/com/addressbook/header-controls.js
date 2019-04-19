@@ -36,6 +36,7 @@ class AddressbookHeaderControls extends LitElement {
     try {
       // get url
       var url = prompt('Enter the address of the person you want to follow')
+      if (!url) return
 
       // validate the URL
       try {
