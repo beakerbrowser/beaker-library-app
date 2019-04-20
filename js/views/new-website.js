@@ -21,7 +21,7 @@ class NewWebsite extends LitElement {
       <link rel="stylesheet" href="/vendor/beaker-app-stdlib/css/fontawesome.css">
       <h1>Create a new website</h1>
       <p>
-        The website will be hosted from your computer using the <a class="link" href="https://datproject.org" target="_blank">dat peer-to-peer protocol</a>.
+        The website will be hosted from your computer using the <a class="link" href="https://datproject.org" target="_blank">peer-to-peer network</a>.
       </p>
 
       <hr>
@@ -35,10 +35,14 @@ class NewWebsite extends LitElement {
               ${this.renderTemplateOption('', 'Empty website')}
             </select>
           </p>
-          <label for="input-title" class="required">Title</label>
-          <input id="input-title" type="text" name="title" autofocus required>
-          <label for="input-description" class="optional">Description (optional)</label>
-          <input id="input-description" type="text" name="description">
+          <p>
+            <label for="input-title" class="required">Title</label>
+            <input id="input-title" type="text" name="title" autofocus required>
+          </p>
+          <p>
+            <label for="input-description" class="optional">Description (optional)</label>
+            <input id="input-description" type="text" name="description">
+          </p>
         </div>
 
         <hr>

@@ -6,7 +6,7 @@ const cssStr = css`
 :host {
   display: block;
   max-width: 600px;
-  padding: 12px 20px 20px;
+  padding: 14px 20px 20px;
   margin: 20px auto;
   background: #fff;
   border: 1px solid #d4d7dc;
@@ -31,6 +31,10 @@ form > div:not(:last-child) {
   margin-bottom: 30px;
 }
 
+form p {
+  margin: 14px 0;
+}
+
 label,
 input {
   display: block;
@@ -42,7 +46,6 @@ label {
 }
 
 input {
-  margin-bottom: 10px;
   font-size: 16px;
   height: 40px;
   padding: 0 10px;
