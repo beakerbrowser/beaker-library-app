@@ -1,11 +1,10 @@
 import { LitElement, css, html } from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-element.js'
 import * as QP from './lib/query-params.js'
 import { profiles } from './tmp-beaker.js'
-import './com/header-nav.js'
-import './com/viewed-site-header.js'
-import './views/addressbook.js'
-import './views/bookmarks.js'
-import './views/websites.js'
+import './com/app-nav.js'
+import './views/content.js'
+import './views/files.js'
+import './views/dats.js'
 import './views/new-website.js'
 
 const DEFAULT_CATEGORIES = {
@@ -25,21 +24,23 @@ class Library extends LitElement {
     return {
       view: {type: String},
       category: {type: String},
-      site: {type: String},
+      dat: {type: String},
+      path: {type: String},
       user: {type: Object}
     }
   }
 
   constructor () {
     super()
-    this.view = QP.getParam('view', 'addressbook')
-    this.category = QP.getParam('category', DEFAULT_CATEGORIES[this.view])
-    this.site = QP.getParam('site', '')
+    this.view = QP.getParam('view', 'dats')
+    this.category = QP.getParam('category', '')
+    this.dat = QP.getParam('dat', '')
+    this.path = QP.getParam('path', '')
     window.addEventListener('popstate', this.onPopState.bind(this))
     this.setTitle()
 
     this.load()
-    if (this.site) {
+    if (this.dat) {
       this.resolveSite()
     }
   }
@@ -54,12 +55,12 @@ class Library extends LitElement {
   }
 
   async resolveSite () {
-    if (this.site.startsWith('dat://')) {
-      var url = new URL(this.site)
+    if (this.dat.startsWith('dat://')) {
+      var url = new URL(this.dat)
       // if not a raw url, resolve and update
       if (url.hostname.length !== '64') {
-        this.site = `dat://${await DatArchive.resolveName(this.site)}`
-        QP.setParams({site: this.site})
+        this.dat = `dat://${await DatArchive.resolveName(this.dat)}`
+        QP.setParams({dat: this.dat})
       }
     }
   }
@@ -69,13 +70,20 @@ class Library extends LitElement {
 
   render () {
     return html`
-      <main>
-        ${this.site ? html`<viewed-site-header url="${this.site}"></viewed-site-header>` : ''}
-        <header-nav
-          current-tab=${this.view}
-          site=${this.site}
-          @change-tab=${this.onSetView}
-        ></header-nav>
+      <nav>
+        <h1 class="brand">
+          <img src="asset:favicon:beaker://library">
+          Library
+        </h1>
+        <app-nav
+          .user=${this.user}
+          view=${this.view}
+          category=${this.category}
+          dat=${this.dat}
+          @change-location=${this.onChangeLocation}
+        ></app-nav>
+      </nav>
+      <main @change-location=${this.onChangeLocation}>
         ${this.renderView()}
       </main>
     `
@@ -83,31 +91,32 @@ class Library extends LitElement {
 
   renderView () {
     switch (this.view) {
-      case 'bookmarks':
+      case 'content':
         return html`
-          <library-view-bookmarks
-            category="${this.category}"
-            site="${this.site}"
-          ></library-view-bookmarks>
+          <library-view-content
+            .user=${this.user}
+            category=${this.category}
+            ></library-view-content>
         `
-      case 'addressbook':
+      case 'files':
         return html`
-          <library-view-addressbook
-            category="${this.category}"
-            site="${this.site}"
-          ></library-view-addressbook>
+          <library-view-files
+            .user=${this.user}
+            dat=${this.dat}
+            path=${this.path}
+            ></library-view-files>
         `
       case 'new-website':
         return html`
           <library-view-new-website></library-view-new-website>
         `
+      case 'dats':
       default:
-      case 'websites':
         return html`
-          <library-view-websites
-            category="${['trash', 'seeding'].includes(this.view) ? this.view : 'your'}"
-            site="${this.site}"
-          ></library-view-websites>
+          <library-view-dats
+            .user=${this.user}
+            category=${this.category}
+            ></library-view-dats>
         `
     }
   }
@@ -115,10 +124,17 @@ class Library extends LitElement {
   // events
   // =
 
-  onSetView (e) {
-    this.view = e.detail.tab
-    this.category = DEFAULT_CATEGORIES[this.view]
-    QP.setParams({view: this.view, category: false})
+  onChangeLocation (e) {
+    this.view = e.detail.view || ''
+    this.category = e.detail.category || ''
+    this.dat = e.detail.dat || ''
+    this.path = e.detail.path || ''
+    QP.setParams({
+      view: this.view,
+      category: this.category,
+      dat: this.dat,
+      path: this.path
+    }, true)
     this.setTitle()
   }
 
@@ -130,29 +146,41 @@ class Library extends LitElement {
   onPopState (e) {
     this.view = QP.getParam('view')
     this.category = QP.getParam('category') || DEFAULT_CATEGORIES[this.view]
-    this.user = QP.getParam('user')
+    this.dat = QP.getParam('dat')
+    this.path = QP.getParam('path')
   }
 }
 Library.styles = css`
 :host {
-  display: flex;
-  width: 810px;
-  margin: 0 auto 100px;
+  display: grid;
+  height: 100vh;
+  width: 100vw;
+  grid-template-columns: 200px calc(100vw - 200px);
 }
 
 nav {
-  flex: 0 0 200px;
-  padding: 0 15px;
+  background: #eeeeef;
+  border-right: 1px solid #d4d7dc;
+  height: 100vh;
+  overflow-y: auto;
 }
 
 main {
-  flex: 0 0 810px;
+  background: #fff;
 }
 
-nav .content {
-  padding: 20px 0;
-  position: sticky;
-  top: 0px;
+nav .brand {
+  display: flex;
+  align-items: center;
+  color: #555;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+nav .brand img {
+  width: 26px;
+  height: 26px;
+  margin: 0 8px 0 13px;
 }
 
 `

@@ -7,7 +7,7 @@ const cssStr = css`
   display: block;
   max-width: 600px;
   padding: 14px 20px 20px;
-  margin: 20px auto;
+  margin: 20px;
   background: #fff;
   border: 1px solid #d4d7dc;
   border-radius: 4px;
