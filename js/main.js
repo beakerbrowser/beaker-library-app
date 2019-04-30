@@ -175,6 +175,7 @@ nav .brand {
   color: #555;
   font-weight: 500;
   font-size: 16px;
+  margin-bottom: 25px;
 }
 
 nav .brand img {
