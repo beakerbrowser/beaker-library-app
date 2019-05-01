@@ -36,8 +36,7 @@ class AppNav extends LitElement {
       datCategory('templates'),
       html`<h5>System</h5>`,
       datCategory('users'),
-      {view: 'database', category: undefined, label: html`<i class="fas fa-fw fa-database"></i> Database`},
-      datCategory('trash')
+      {view: 'database', category: undefined, label: html`<i class="fas fa-fw fa-database"></i> Database`}
     ]
   }
 

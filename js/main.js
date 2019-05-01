@@ -4,9 +4,9 @@ import { changeFavicon } from '/vendor/beaker-app-stdlib/js/dom.js'
 import * as QP from './lib/query-params.js'
 import { profiles } from './tmp-beaker.js'
 import './com/app-nav.js'
+import '/vendor/beaker-app-stdlib/js/com/library/dats/explorer.js'
 import './views/database.js'
 import './views/files.js'
-import './views/dats.js'
 import './views/new-website.js'
 
 class Library extends LitElement {
@@ -16,7 +16,8 @@ class Library extends LitElement {
       category: {type: String},
       dat: {type: String},
       path: {type: String},
-      user: {type: Object}
+      user: {type: Object},
+      ownerFilter: {type: Object}
     }
   }
 
@@ -26,6 +27,7 @@ class Library extends LitElement {
     this.category = QP.getParam('category', '')
     this.dat = QP.getParam('dat', '')
     this.path = QP.getParam('path', '')
+    this.ownerFilter = QP.getParam('ownerFilter', '')
     window.addEventListener('popstate', this.onPopState.bind(this))
     this.setTitle()
 
@@ -93,7 +95,8 @@ class Library extends LitElement {
           <library-view-database
             .user=${this.user}
             category=${this.category}
-            ></library-view-database>
+            owner-filter=${this.ownerFilter}
+          ></library-view-database>
         `
       case 'files':
         return html`
@@ -110,10 +113,11 @@ class Library extends LitElement {
       case 'dats':
       default:
         return html`
-          <library-view-dats
+          <beaker-library-dats-explorer
             .user=${this.user}
-            category=${this.category}
-            ></library-view-dats>
+            category="${this.category}"
+            owner-filter=${this.ownerFilter}
+          ></beaker-library-dats-explorer>
         `
     }
   }
@@ -126,11 +130,13 @@ class Library extends LitElement {
     this.category = e.detail.category || ''
     this.dat = e.detail.dat || ''
     this.path = e.detail.path || ''
+    this.ownerFilter = e.detail.ownerFilter || ''
     QP.setParams({
       view: this.view,
       category: this.category,
       dat: this.dat,
-      path: this.path
+      path: this.path,
+      ownerFilter: this.ownerFilter
     }, true)
     this.setTitle()
   }
