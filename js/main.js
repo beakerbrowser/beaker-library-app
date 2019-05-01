@@ -4,7 +4,7 @@ import { changeFavicon } from '/vendor/beaker-app-stdlib/js/dom.js'
 import * as QP from './lib/query-params.js'
 import { profiles } from './tmp-beaker.js'
 import './com/app-nav.js'
-import './views/content.js'
+import './views/database.js'
 import './views/files.js'
 import './views/dats.js'
 import './views/new-website.js'
@@ -47,9 +47,10 @@ class Library extends LitElement {
     } else if (this.view === 'files') {
       title = (this.path || '').split('/').filter(Boolean).pop()
       changeFavicon(`/img/files.png`)
-    } else if (this.view === 'content') {
-      title = ucfirst(this.category)
-      changeFavicon(`/img/${this.category}.png`)
+    } else if (this.view === 'database') {
+      let c = this.category || 'bookmarks'
+      title = ucfirst(c)
+      changeFavicon(`/img/${c}.png`)
     }
     document.title = title ? `${title} | Library` : 'Library'
   }
@@ -87,12 +88,12 @@ class Library extends LitElement {
 
   renderView () {
     switch (this.view) {
-      case 'content':
+      case 'database':
         return html`
-          <library-view-content
+          <library-view-database
             .user=${this.user}
             category=${this.category}
-            ></library-view-content>
+            ></library-view-database>
         `
       case 'files':
         return html`

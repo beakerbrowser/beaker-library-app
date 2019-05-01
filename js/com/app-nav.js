@@ -24,7 +24,7 @@ class AppNav extends LitElement {
 
   get tabs () {
     return [
-      html`<h5>Websites</h5>`,
+      html`<h5>General</h5>`,
       datCategory('applications'),
       // datCategory('musicAlbums'),
       // datCategory('photoAlbums'),
@@ -34,20 +34,16 @@ class AppNav extends LitElement {
       html`<h5>Developer tools</h5>`,
       datCategory('modules'),
       datCategory('templates'),
-      html`<h5>Personal Data</h5>`,
-      {view: 'content', category: 'bookmarks', label: html`<i class="far fa-fw fa-star"></i> Bookmarks`},
-      {view: 'content', category: 'posts', label: html`<i class="far fa-fw fa-comment-alt"></i> Posts`},
-      {view: 'content', category: 'reactions', label: html`<i class="far fa-fw fa-smile"></i> Reactions`},
-      {view: 'content', category: 'socialgraph', label: html`<i class="far fa-fw fa-address-book"></i> Social graph`},
       html`<h5>System</h5>`,
       datCategory('users'),
+      {view: 'database', category: undefined, label: html`<i class="fas fa-fw fa-database"></i> Database`},
       datCategory('trash')
     ]
   }
 
   isTabActive (tab) {
     for (let k of ['view', 'category', 'dat']) {
-      if ((!this[k] && !tab[k]) || (this[k] === tab[k])) {
+      if (tab[k] === undefined || (!this[k] && !tab[k]) || (this[k] === tab[k])) {
         continue
       }
       return false

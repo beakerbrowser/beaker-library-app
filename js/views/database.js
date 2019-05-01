@@ -1,11 +1,10 @@
-import { LitElement, html } from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-element.js'
-import '/vendor/beaker-app-stdlib/js/com/library/files/explorer.js'
+import { LitElement, html, css } from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-element.js'
 import '/vendor/beaker-app-stdlib/js/com/library/socialgraph/explorer.js'
 import '/vendor/beaker-app-stdlib/js/com/library/posts/explorer.js'
 import '/vendor/beaker-app-stdlib/js/com/library/bookmarks/explorer.js'
 import '/vendor/beaker-app-stdlib/js/com/library/reactions/explorer.js'
 
-class ContentView extends LitElement {
+class DatabaseView extends LitElement {
   static get properties() {
     return {
       category: {type: String},
@@ -21,18 +20,10 @@ class ContentView extends LitElement {
   // =
 
   render () {
-    if (this[`render${this.category}`]) {
-      return this[`render${this.category}`]()
+    var category = this.category || 'bookmarks'
+    if (this[`render${category}`]) {
+      return this[`render${category}`]()
     }
-  }
-
-  renderfiles () {
-    if (!this.user) return html`<div></div>`
-    return html`
-      <beaker-library-files-explorer
-        url="${this.user.url}"
-      ></beaker-library-files-explorer>
-    `
   }
 
   rendersocialgraph () {
@@ -64,4 +55,4 @@ class ContentView extends LitElement {
   }
 }
 
-customElements.define('library-view-content', ContentView)
+customElements.define('library-view-database', DatabaseView)
