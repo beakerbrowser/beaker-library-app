@@ -10,19 +10,20 @@ const cssStr = css`
 h5 {
   margin: 15px 10px 5px;
   color: #666673;
-  font-weight: 500;
+  font-weight: 400;
 }
 
 a {
   display: flex;
-  padding: 8px 16px;
+  padding: 10px 16px;
   align-items: center;
   border: 0;
 }
 
 a i {
-  margin-right: 4px;
+  margin-right: 6px;
   font-size: 16px;
+  color: gray;
 }
 
 a.active {
