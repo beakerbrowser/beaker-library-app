@@ -1,4 +1,6 @@
 import { LitElement, css, html } from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-element.js'
+import { ucfirst } from '/vendor/beaker-app-stdlib/js/strings.js'
+import { changeFavicon } from '/vendor/beaker-app-stdlib/js/dom.js'
 import * as QP from './lib/query-params.js'
 import { profiles } from './tmp-beaker.js'
 import './com/app-nav.js'
@@ -6,18 +8,6 @@ import './views/content.js'
 import './views/files.js'
 import './views/dats.js'
 import './views/new-website.js'
-
-const DEFAULT_CATEGORIES = {
-  addressbook: 'following',
-  bookmarks: 'your',
-  websites: 'your'
-}
-
-const VIEW_TITLES = {
-  addressbook: 'Address book',
-  bookmarks: 'Bookmarks',
-  websites: 'Websites',
-}
 
 class Library extends LitElement {
   static get properties() {
@@ -50,7 +40,17 @@ class Library extends LitElement {
   }
 
   setTitle () {
-    let title = VIEW_TITLES[this.view]
+    let title = false
+    if (this.view === 'dats') {
+      title = ucfirst(this.category)
+      changeFavicon(`/img/${this.category}.png`)
+    } else if (this.view === 'files') {
+      title = (this.path || '').split('/').filter(Boolean).pop()
+      changeFavicon(`/img/files.png`)
+    } else if (this.view === 'content') {
+      title = ucfirst(this.category)
+      changeFavicon(`/img/${this.category}.png`)
+    }
     document.title = title ? `${title} | Library` : 'Library'
   }
 
@@ -71,10 +71,6 @@ class Library extends LitElement {
   render () {
     return html`
       <nav>
-        <h1 class="brand">
-          <img src="asset:favicon:beaker://library">
-          Library
-        </h1>
         <app-nav
           .user=${this.user}
           view=${this.view}
@@ -145,7 +141,7 @@ class Library extends LitElement {
 
   onPopState (e) {
     this.view = QP.getParam('view')
-    this.category = QP.getParam('category') || DEFAULT_CATEGORIES[this.view]
+    this.category = QP.getParam('category')
     this.dat = QP.getParam('dat')
     this.path = QP.getParam('path')
   }
@@ -159,7 +155,7 @@ Library.styles = css`
 }
 
 nav {
-  background: #eeeeef;
+  background: #f0f0f3;
   border-right: 1px solid #d4d7dc;
   height: 100vh;
   overflow-y: auto;
@@ -168,22 +164,6 @@ nav {
 main {
   background: #fff;
 }
-
-nav .brand {
-  display: flex;
-  align-items: center;
-  color: #555;
-  font-weight: 500;
-  font-size: 16px;
-  margin-bottom: 25px;
-}
-
-nav .brand img {
-  width: 26px;
-  height: 26px;
-  margin: 0 8px 0 13px;
-}
-
 `
 
 customElements.define('library-app', Library)
