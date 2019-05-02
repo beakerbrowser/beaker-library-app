@@ -24,18 +24,14 @@ class AppNav extends LitElement {
 
   get tabs () {
     return [
-      html`<h5>General</h5>`,
+      html`<h5>Library</h5>`,
       datCategory('applications'),
-      // datCategory('musicAlbums'),
-      // datCategory('photoAlbums'),
-      // datCategory('podcasts'),
       datCategory('websites'),
-      // datCategory('wikis'),
+      datCategory('users'),
       html`<h5>Developer tools</h5>`,
       datCategory('modules'),
       datCategory('templates'),
       html`<h5>System</h5>`,
-      datCategory('users'),
       {view: 'database', category: undefined, label: html`<i class="fas fa-fw fa-database"></i> Database`}
     ]
   }
