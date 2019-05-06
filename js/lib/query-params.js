@@ -1,4 +1,4 @@
-export function setParams (kv, clear = false) {
+export function setParams (kv, clear = false, replaceState = false) {
   var url = (new URL(window.location))
   if (clear) url.search = ''
   for (var k in kv) {
@@ -8,7 +8,11 @@ export function setParams (kv, clear = false) {
       url.searchParams.delete(k)
     }
   }
-  window.history.pushState({}, null, url)
+  if (replaceState) {
+    window.history.replaceState({}, null, url)
+  } else {
+    window.history.pushState({}, null, url)
+  }
 }
 
 export function getParam (k, fallback = '') {

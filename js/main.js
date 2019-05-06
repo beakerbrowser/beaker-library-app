@@ -3,7 +3,7 @@ import { ucfirst } from '/vendor/beaker-app-stdlib/js/strings.js'
 import { changeFavicon } from '/vendor/beaker-app-stdlib/js/dom.js'
 import * as QP from './lib/query-params.js'
 import { profiles } from './tmp-beaker.js'
-import './com/app-nav.js'
+import '/vendor/beaker-app-stdlib/js/com/library/app-nav.js'
 import '/vendor/beaker-app-stdlib/js/com/library/dats/explorer.js'
 import './views/database.js'
 import './views/files.js'
@@ -23,13 +23,25 @@ class Library extends LitElement {
 
   constructor () {
     super()
-    this.view = QP.getParam('view', 'dats')
+    this.view = QP.getParam('view', '')
     this.category = QP.getParam('category', '')
     this.dat = QP.getParam('dat', '')
     this.path = QP.getParam('path', '')
     this.ownerFilter = QP.getParam('ownerFilter', '')
     window.addEventListener('popstate', this.onPopState.bind(this))
     this.setTitle()
+
+    if (!this.view) {
+      if (this.dat && !this.view) {
+        this.view = 'files'
+        QP.setParams({view: 'files'}, false, true)
+      } else {
+        // TODO: should go to 'home'
+        this.view = 'dats'
+        this.category = 'websites'
+        QP.setParams({view: 'dats', category: 'websites'}, false, true)
+      }
+    }
 
     this.load()
     if (this.dat) {
@@ -54,7 +66,7 @@ class Library extends LitElement {
       title = ucfirst(c)
       changeFavicon(`/img/${c}.png`)
     }
-    document.title = title ? `${title} | Library` : 'Library'
+    document.title = title ? `${title} | Beaker Library` : 'Beaker Library'
   }
 
   async resolveSite () {
@@ -74,13 +86,13 @@ class Library extends LitElement {
   render () {
     return html`
       <nav>
-        <app-nav
+        <beaker-library-app-nav
           .user=${this.user}
           view=${this.view}
           category=${this.category}
           dat=${this.dat}
           @change-location=${this.onChangeLocation}
-        ></app-nav>
+        ></beaker-library-app-nav>
       </nav>
       <main @change-location=${this.onChangeLocation}>
         ${this.renderView()}
