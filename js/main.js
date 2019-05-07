@@ -4,9 +4,10 @@ import { changeFavicon } from '/vendor/beaker-app-stdlib/js/dom.js'
 import * as QP from './lib/query-params.js'
 import { profiles } from './tmp-beaker.js'
 import '/vendor/beaker-app-stdlib/js/com/library/app-nav.js'
+import '/vendor/beaker-app-stdlib/js/com/library/bookmarks/explorer.js'
 import '/vendor/beaker-app-stdlib/js/com/library/dats/explorer.js'
-import './views/database.js'
-import './views/files.js'
+import '/vendor/beaker-app-stdlib/js/com/library/files/explorer.js'
+import '/vendor/beaker-app-stdlib/js/com/library/database/explorer.js'
 import './views/new-website.js'
 
 class Library extends LitElement {
@@ -36,10 +37,8 @@ class Library extends LitElement {
         this.view = 'files'
         QP.setParams({view: 'files'}, false, true)
       } else {
-        // TODO: should go to 'home'
-        this.view = 'dats'
-        this.category = 'websites'
-        QP.setParams({view: 'dats', category: 'websites'}, false, true)
+        this.view = 'bookmarks'
+        QP.setParams({view: 'bookmarks'}, false, true)
       }
     }
 
@@ -61,12 +60,14 @@ class Library extends LitElement {
     } else if (this.view === 'files') {
       title = (this.path || '').split('/').filter(Boolean).pop()
       changeFavicon(`/img/files.png`)
+    } else if (this.view === 'bookmarks') {
+      title = 'Bookmarks'
+      changeFavicon(`/img/bookmarks.png`)
     } else if (this.view === 'database') {
-      let c = this.category || 'bookmarks'
-      title = ucfirst(c)
-      changeFavicon(`/img/${c}.png`)
+      title = `Database: ${ucfirst(this.category || 'bookmarks')}`
+      changeFavicon(`/img/database.png`)
     }
-    document.title = title ? `${title} | Beaker Library` : 'Beaker Library'
+    document.title = title ? `${title} | Library` : 'Library'
   }
 
   async resolveSite () {
@@ -102,21 +103,27 @@ class Library extends LitElement {
 
   renderView () {
     switch (this.view) {
+      case 'bookmarks':
+        return html`
+          <beaker-library-bookmarks-explorer
+            .user=${this.user}
+            owner-filter=${this.ownerFilter}
+          ></beaker-library-bookmarks-explorer>
+        `
       case 'database':
         return html`
-          <library-view-database
+          <beaker-library-database-explorer
             .user=${this.user}
-            category=${this.category}
-            owner-filter=${this.ownerFilter}
-          ></library-view-database>
+            category=${this.category || 'bookmarks'}
+          ></beaker-library-database-explorer>
         `
       case 'files':
         return html`
-          <library-view-files
+          <beaker-library-files-explorer
             .user=${this.user}
-            dat=${this.dat}
-            path=${this.path}
-            ></library-view-files>
+            dat="${this.dat}"
+            path="${this.path}"
+          ></beaker-library-files-explorer>
         `
       case 'new-website':
         return html`
