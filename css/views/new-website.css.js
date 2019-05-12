@@ -1,16 +1,13 @@
 import {css} from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-element.js'
 import inputsCSS from '/vendor/beaker-app-stdlib/css/inputs.css.js'
-import buttonsCSS from '/vendor/beaker-app-stdlib/css/buttons.css.js'
+import buttonsCSS from '/vendor/beaker-app-stdlib/css/buttons2.css.js'
 
 const cssStr = css`
 :host {
   display: block;
   max-width: 600px;
-  padding: 14px 20px 20px;
   margin: 20px;
   background: #fff;
-  border: 1px solid #d4d7dc;
-  border-radius: 4px;
 }
 
 h1 {

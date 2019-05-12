@@ -23,18 +23,15 @@ class NewWebsite extends LitElement {
       <p>
         The website will be hosted from your computer using the <a class="link" href="https://datproject.org" target="_blank">peer-to-peer network</a>.
       </p>
-
-      <hr>
-
       <form @submit=${this.onSubmit}>
         <div>
-          <p>
+          ${''/* TODO <p>
             <label for="input-template" class="optional">Template</label>
             <select id="input-template" name="template">
               ${this.renderTemplateOption('wiki', 'Wiki site')}
               ${this.renderTemplateOption('', 'Empty website')}
             </select>
-          </p>
+          </p>*/}
           <p>
             <label for="input-title" class="required">Title</label>
             <input id="input-title" type="text" name="title" autofocus required>
@@ -44,11 +41,8 @@ class NewWebsite extends LitElement {
             <input id="input-description" type="text" name="description">
           </p>
         </div>
-
-        <hr>
-
         <div>
-          <button type="submit" class="btn primary thick">Create website</button>
+          <button type="submit" class="primary thick">Create website</button>
         </div>
       </form>
     `
@@ -65,7 +59,7 @@ class NewWebsite extends LitElement {
   async onSubmit (e) {
     e.preventDefault()
 
-    var template = e.currentTarget.template.value
+    var template = false // TODO e.currentTarget.template.value
     var title = e.currentTarget.title.value
     var description = e.currentTarget.description.value
 
@@ -90,7 +84,7 @@ class NewWebsite extends LitElement {
     } else {
       let newSite = await DatArchive.create({title, description, prompt: false})
       await newSite.writeFile('index.html', DEFAULT_INDEX_HTML)
-      window.location = `beaker://editor/${newSite.url}`
+      window.location = `beaker://editor/${newSite.url}/index.html`
     }
   }
 }

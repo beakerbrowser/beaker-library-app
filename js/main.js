@@ -30,8 +30,11 @@ class Library extends LitElement {
     this.path = QP.getParam('path', '')
     this.ownerFilter = QP.getParam('ownerFilter', '')
     window.addEventListener('popstate', this.onPopState.bind(this))
-    this.setTitle()
 
+    this.load()
+  }
+
+  async load () {
     if (!this.view) {
       if (this.dat && !this.view) {
         this.view = 'files'
@@ -41,15 +44,11 @@ class Library extends LitElement {
         QP.setParams({view: 'bookmarks'}, false, true)
       }
     }
-
-    this.load()
+    this.user = await profiles.getCurrentUser()
     if (this.dat) {
       this.resolveSite()
     }
-  }
-
-  async load () {
-    this.user = await profiles.getCurrentUser()
+    this.setTitle()
   }
 
   setTitle () {
@@ -85,6 +84,7 @@ class Library extends LitElement {
   // =
 
   render () {
+    if (!this.user) return html``
     return html`
       <nav>
         <beaker-library-app-nav
@@ -121,7 +121,7 @@ class Library extends LitElement {
         return html`
           <beaker-library-files-explorer
             .user=${this.user}
-            dat="${this.dat}"
+            dat="${this.dat || this.user && this.user.url}"
             path="${this.path}"
           ></beaker-library-files-explorer>
         `
