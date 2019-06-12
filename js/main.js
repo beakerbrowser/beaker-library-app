@@ -7,7 +7,6 @@ import '/vendor/beaker-app-stdlib/js/com/library/app-nav.js'
 import '/vendor/beaker-app-stdlib/js/com/library/bookmarks/explorer.js'
 import '/vendor/beaker-app-stdlib/js/com/library/dats/explorer.js'
 import '/vendor/beaker-app-stdlib/js/com/library/files/explorer.js'
-import '/vendor/beaker-app-stdlib/js/com/library/database/explorer.js'
 import './views/new-website.js'
 
 class Library extends LitElement {
@@ -40,11 +39,11 @@ class Library extends LitElement {
         this.view = 'files'
         QP.setParams({view: 'files'}, false, true)
       } else {
-        this.view = 'bookmarks'
-        QP.setParams({view: 'bookmarks'}, false, true)
+        this.view = 'files'
+        QP.setParams({view: 'files'}, false, true)
       }
     }
-    this.user = await profiles.getCurrentUser()
+    this.user = await profiles.me()
     if (this.dat) {
       this.resolveSite()
     }
