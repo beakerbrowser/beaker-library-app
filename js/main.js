@@ -1,194 +1,159 @@
-import { LitElement, css, html } from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-element.js'
-import { ucfirst } from '/vendor/beaker-app-stdlib/js/strings.js'
-import { changeFavicon } from '/vendor/beaker-app-stdlib/js/dom.js'
+import { LitElement, html } from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-element.js'
 import * as QP from './lib/query-params.js'
-import { profiles } from './tmp-beaker.js'
-import '/vendor/beaker-app-stdlib/js/com/library/app-nav.js'
-import '/vendor/beaker-app-stdlib/js/com/library/bookmarks/explorer.js'
-import '/vendor/beaker-app-stdlib/js/com/library/dats/explorer.js'
-import '/vendor/beaker-app-stdlib/js/com/library/files/explorer.js'
-import './views/new-website.js'
+import _debounce from '/vendor/lodash.debounce.js'
+import './com/nav.js'
+import './com/side-filters.js'
+import './com/filters.js'
+import './views/pins.js'
+import './views/bookmarks.js'
+import './views/statuses.js'
+import './views/dats.js'
+import './views/people.js'
+import mainCSS from '../css/main.css.js'
 
-class Library extends LitElement {
-  static get properties() {
+export class LibraryApp extends LitElement {
+  static get properties () {
     return {
-      view: {type: String},
-      category: {type: String},
-      dat: {type: String},
-      path: {type: String},
-      user: {type: Object},
-      ownerFilter: {type: Object}
+      items: {type: Array}
     }
+  }
+
+  static get styles () {
+    return mainCSS
   }
 
   constructor () {
     super()
-    this.view = QP.getParam('view', '')
-    this.category = QP.getParam('category', '')
-    this.dat = QP.getParam('dat', '')
-    this.path = QP.getParam('path', '')
-    this.ownerFilter = QP.getParam('ownerFilter', '')
-    window.addEventListener('popstate', this.onPopState.bind(this))
+
+    this.user = null
+    this.currentView = QP.getParam('view', 'pins')
+    this.currentWritableFilter = QP.getParam('writable', '')
+    this.items = []
 
     this.load()
+
+    window.addEventListener('focus', _debounce(() => {
+      // load latest when we're opened, to make sure we stay in sync
+      this.load()
+    }, 500))
   }
 
   async load () {
-    if (!this.view) {
-      if (this.dat && !this.view) {
-        this.view = 'files'
-        QP.setParams({view: 'files'}, false, true)
-      } else {
-        this.view = 'files'
-        QP.setParams({view: 'files'}, false, true)
-      }
+    if (!this.user) {
+      this.user = await beaker.users.getCurrent()
     }
-    this.user = await profiles.me()
-    if (this.dat) {
-      this.resolveSite()
-    }
-    this.setTitle()
-  }
-
-  setTitle () {
-    let title = false
-    if (this.view === 'dats') {
-      title = ucfirst(this.category)
-      changeFavicon(`/img/${this.category}.png`)
-    } else if (this.view === 'files') {
-      title = (this.path || '').split('/').filter(Boolean).pop()
-      changeFavicon(`/img/files.png`)
-    } else if (this.view === 'bookmarks') {
-      title = 'Bookmarks'
-      changeFavicon(`/img/bookmarks.png`)
-    } else if (this.view === 'database') {
-      title = `Database: ${ucfirst(this.category || 'bookmarks')}`
-      changeFavicon(`/img/database.png`)
-    }
-    document.title = title ? `${title} | Library` : 'Library'
-  }
-
-  async resolveSite () {
-    if (this.dat.startsWith('dat://')) {
-      var url = new URL(this.dat)
-      // if not a raw url, resolve and update
-      if (url.hostname.length !== '64') {
-        this.dat = `dat://${await DatArchive.resolveName(this.dat)}`
-        QP.setParams({dat: this.dat})
-      }
+    await this.requestUpdate()
+    try {
+      await this.shadowRoot.querySelector('[the-current-view]').load()
+    } catch (e) {
+      console.debug(e)
     }
   }
 
   // rendering
   // =
 
-  render () {
-    if (!this.user) return html``
+  render () {    
     return html`
-      <nav>
-        <beaker-library-app-nav
-          .user=${this.user}
-          view=${this.view}
-          category=${this.category}
-          dat=${this.dat}
-          @change-location=${this.onChangeLocation}
-        ></beaker-library-app-nav>
-      </nav>
-      <main @change-location=${this.onChangeLocation}>
+      <link rel="stylesheet" href="/vendor/beaker-app-stdlib/css/fontawesome.css">
+      <library-nav
+        .user=${this.user}
+        currentView=${this.currentView}
+        @change-view=${this.onChangeView}
+      ></library-nav>
+      ${''/*<div id="content-header">
+        <library-filters
+          query=${this.currentQuery}
+          writable=${this.currentWritableFilter}
+          @clear-query=${this.onClearQuery}
+          @clear-writable=${this.onClearWritableFilter}
+        ></library-filters>
+        </div>*/}
+      <div id="content">
         ${this.renderView()}
-      </main>
+      </div>
     `
   }
 
   renderView () {
-    switch (this.view) {
+    switch (this.currentView) {
+      case 'pins':
+        return html`<pins-view the-current-view></pins-view>`
       case 'bookmarks':
         return html`
-          <beaker-library-bookmarks-explorer
+          <bookmarks-view
+            the-current-view
             .user=${this.user}
-            owner-filter=${this.ownerFilter}
-          ></beaker-library-bookmarks-explorer>
+            currentView=${this.currentView}
+          ></bookmarks-view>
         `
-      case 'database':
+      case 'status-updates':
         return html`
-          <beaker-library-database-explorer
+          <statuses-view
+            the-current-view
             .user=${this.user}
-            category=${this.category || 'bookmarks'}
-          ></beaker-library-database-explorer>
+          ></statuses-view>
         `
-      case 'files':
+      case 'people':
         return html`
-          <beaker-library-files-explorer
+          <people-view
+            the-current-view
             .user=${this.user}
-            dat="${this.dat || this.user && this.user.url}"
-            path="${this.path}"
-          ></beaker-library-files-explorer>
+            currentView=${this.currentView}
+          ></people-view>
         `
-      case 'new-website':
+      case 'websites':
+      case 'archives':
+      case 'trash':
         return html`
-          <library-view-new-website></library-view-new-website>
+          <dats-view
+            the-current-view
+            .user=${this.user}
+            currentView=${this.currentView}
+          ></dats-view>
         `
-      case 'dats':
       default:
-        return html`
-          <beaker-library-dats-explorer
-            .user=${this.user}
-            category="${this.category}"
-            owner-filter=${this.ownerFilter}
-          ></beaker-library-dats-explorer>
-        `
+        return html`<div class="empty"><div><span class="fas fa-toolbox"></span></div>Under Construction</div>`
     }
   }
+
+//   <library-side-filters
+//   current=${this.currentWritableFilter}
+//   @change=${this.onChangeWritableFilter}
+// ></library-side-filters>
 
   // events
   // =
 
-  onChangeLocation (e) {
-    this.view = e.detail.view || ''
-    this.category = e.detail.category || ''
-    this.dat = e.detail.dat || ''
-    this.path = e.detail.path || ''
-    this.ownerFilter = e.detail.ownerFilter || ''
-    QP.setParams({
-      view: this.view,
-      category: this.category,
-      dat: this.dat,
-      path: this.path,
-      ownerFilter: this.ownerFilter
-    }, true)
-    this.setTitle()
+  onChangeCategory (e) {
+    this.currentCategory = e.detail.category
+    QP.setParams({category: this.currentCategory})
+    this.load()
   }
 
-  onSetCategory (e) {
-    this.category = e.detail.category
-    QP.setParams({category: this.category})
+  onChangeView (e) {
+    this.currentView = e.detail.view
+    QP.setParams({view: this.currentView})
+    this.load()
   }
 
-  onPopState (e) {
-    this.view = QP.getParam('view')
-    this.category = QP.getParam('category')
-    this.dat = QP.getParam('dat')
-    this.path = QP.getParam('path')
+  onClearType (e) {
+    this.currentView = undefined
+    QP.setParams({type: this.currentView})
+    this.load()
+  }
+
+  onChangeWritableFilter (e) {
+    this.currentWritableFilter = e.detail.writable
+    QP.setParams({writable: this.currentWritableFilter})
+    this.load()
+  }
+
+  onClearWritableFilter (e) {
+    this.currentWritableFilter = ''
+    QP.setParams({writable: this.currentWritableFilter})
+    this.load()
   }
 }
-Library.styles = css`
-:host {
-  display: grid;
-  height: 100vh;
-  width: 100vw;
-  grid-template-columns: 200px calc(100vw - 200px);
-}
 
-nav {
-  background: #f0f0f3;
-  border-right: 1px solid #d4d7dc;
-  height: 100vh;
-  overflow-y: auto;
-}
-
-main {
-  background: #fff;
-}
-`
-
-customElements.define('library-app', Library)
+customElements.define('library-app', LibraryApp)
