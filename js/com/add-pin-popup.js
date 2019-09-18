@@ -5,7 +5,6 @@ import popupsCSS from '/vendor/beaker-app-stdlib/css/com/popups.css.js'
 import { writeToClipboard } from '/vendor/beaker-app-stdlib/js/clipboard.js'
 import * as contextMenu from '/vendor/beaker-app-stdlib/js/com/context-menu.js'
 import { toNiceUrl } from '/vendor/beaker-app-stdlib/js/strings.js'
-const profiles = navigator.importSystemAPI('unwalled-garden-profiles')
 
 // exported api
 // =
@@ -142,7 +141,7 @@ export class AddPinPopup extends BasePopup {
   }
 
   async initialLoad () {
-    this.user = await profiles.me()
+    this.user = await UwG.profiles.me()
     await this.loadSuggestions()
   }
 

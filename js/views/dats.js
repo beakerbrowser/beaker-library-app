@@ -1,7 +1,7 @@
 import { LitElement, html } from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-element.js'
 import { repeat } from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-html/directives/repeat.js'
 import { writeToClipboard } from '/vendor/beaker-app-stdlib/js/clipboard.js'
-import { toNiceUrl, ucfirst } from '/vendor/beaker-app-stdlib/js/strings.js'
+import { ucfirst } from '/vendor/beaker-app-stdlib/js/strings.js'
 import * as toast from '/vendor/beaker-app-stdlib/js/com/toast.js'
 import * as contextMenu from '/vendor/beaker-app-stdlib/js/com/context-menu.js'
 import datsViewCSS from '../../css/views/dats.css.js'
@@ -10,9 +10,6 @@ import { oneof } from '../lib/validation.js'
 import libTools from '/vendor/library-tools/index.build.js'
 import '../com/subview-tabs.js'
 import '../hover-menu.js'
-const UwG = {
-  library: navigator.importSystemAPI('unwalled-garden-library')
-}
 
 const SUBVIEWS = [
   {id: 'library', label: 'Library'},
@@ -59,8 +56,9 @@ class DatsView extends LitElement {
       items = await beaker.archives.listTrash()
     } else {
       items = await UwG.library.list({
-        types: libTools.categoryToType(this.currentView),
-        isSaved: this.currentSubview === 'library' ? true : undefined,
+        type: libTools.categoryToType(this.currentView),
+        isSaved: this.currentSubview === 'library' ? true : false,
+        isOwner: this.currentSubview === 'library' ? undefined : false,
         visibility: this.currentSubview === 'library' ? undefined : 'public',
         sortBy: this.currentSort
       })

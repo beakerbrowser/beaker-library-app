@@ -20,11 +20,6 @@ class LibraryNav extends LitElement {
   constructor () {
     super()
   }
-
-  clearQuery () {
-    this.shadowRoot.querySelector('input').value = ''
-  }
-
   // rendering
   // =
 

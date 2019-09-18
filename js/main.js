@@ -78,7 +78,9 @@ export class LibraryApp extends LitElement {
   renderView () {
     switch (this.currentView) {
       case 'pins':
-        return html`<pins-view the-current-view></pins-view>`
+        return html`
+          <pins-view the-current-view></pins-view>
+        `
       case 'bookmarks':
         return html`
           <bookmarks-view

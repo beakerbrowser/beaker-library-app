@@ -1,19 +1,10 @@
 import { LitElement, html } from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-element.js'
 import { repeat } from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-html/directives/repeat.js'
-import { timeDifference } from '/vendor/beaker-app-stdlib/js/time.js'
-import { writeToClipboard } from '/vendor/beaker-app-stdlib/js/clipboard.js'
-import { toNiceUrl, ucfirst } from '/vendor/beaker-app-stdlib/js/strings.js'
-import * as toast from '/vendor/beaker-app-stdlib/js/com/toast.js'
-import * as contextMenu from '/vendor/beaker-app-stdlib/js/com/context-menu.js'
 import bookmarksViewCSS from '../../css/views/bookmarks.css.js'
 import * as QP from '../lib/query-params.js'
 import { oneof } from '../lib/validation.js'
 import '../com/subview-tabs.js'
 import '../hover-menu.js'
-const UwG = {
-  bookmarks: navigator.importSystemAPI('unwalled-garden-bookmarks'),
-  follows: navigator.importSystemAPI('unwalled-garden-follows')
-}
 
 const SUBVIEWS = [
   {id: 'library', label: 'Library'},
@@ -54,17 +45,17 @@ class BookmarksView extends LitElement {
   }
 
   async load () {
-    var authors = undefined
+    var author = undefined
     if (this.currentSubview === 'network') {
-      authors = (await UwG.follows.list({authors: this.userUrl})).map(({topic}) => topic.url)
+      author = (await UwG.follows.list({author: this.userUrl})).map(({topic}) => topic.url)
     } else {
-      authors = [
+      author = [
         this.userUrl,
         (await navigator.filesystem.getRoot()).url
       ]
     }
     var items = await UwG.bookmarks.list({
-      authors,
+      author,
       isOwner: this.currentSubview === 'library' ? true : undefined,
       sortBy: this.currentSort,
       reverse: this.currentSort === 'createdAt'
