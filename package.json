@@ -1,6 +1,6 @@
 {
   "name": "@beaker/library-app",
-  "version": "3.0.1",
+  "version": "4.0.0",
   "description": "The Beaker \"Library\" app ",
   "main": "index.html",
   "scripts": {
