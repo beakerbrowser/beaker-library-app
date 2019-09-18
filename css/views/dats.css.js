@@ -48,7 +48,6 @@ a:hover {
   color: inherit;
   border-radius: 3px;
   border: 1px solid #ccc;
-  overflow: hidden;
   user-select: none;
 }
 
@@ -63,7 +62,7 @@ a:hover {
   background: #fff;
   width: 100%;
   height: 150px;
-  object-fit: contain;
+  object-fit: cover;
   border-bottom: 1px solid #eee;
 }
 

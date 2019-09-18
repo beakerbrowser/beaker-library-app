@@ -27,7 +27,10 @@ export async function save (pins) {
 
 function defaults () {
   return [
-    {title: 'Dat Foundation', href: 'https://dat.foundation'},
+    {title: 'Social Feed', href: 'beaker://library?view=status-updates'},
+    {title: 'Bookmarks', href: 'beaker://library?view=bookmarks'},
+    {title: 'People', href: 'beaker://library?view=people'},
+    {title: 'Websites', href: 'beaker://library?view=websites'},
     {title: 'Documentation', href: 'https://beakerbrowser.com/docs'},
     {title: 'Report an issue', href: 'https://github.com/beakerbrowser/beaker/issues'}
   ]

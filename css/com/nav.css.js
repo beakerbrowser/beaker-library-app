@@ -21,6 +21,7 @@ ${buttonsCSS}
   font-size: 12px;
   background: #fafafa;
   border-right: 1px solid #ccc;
+  user-select: none;
 }
 
 .btn-group {

@@ -35,43 +35,60 @@ a:hover {
   text-decoration: underline;
 }
 
+.listing {
+  display: grid;
+  padding: 15px;
+  grid-gap: 15px 15px;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+}
+
 .item {
-  display: flex;
-  align-items: center;
-  margin: 25px;
-  max-width: 600px;
+  cursor: pointer;
+  border-radius: 3px;
+  color: inherit;
+  border-radius: 3px;
+  border: 1px solid #ccc;
   user-select: none;
 }
 
-.item .thumb {
-  margin-right: 20px;
+.item:hover {
+  border-color: #bbb;
+  box-shadow: 0 2px 3px rgba(0,0,0,.05);
+  text-decoration: none;
 }
 
-.item .thumb img {
+.item img {
   display: block;
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
+  background: #fff;
+  width: 100%;
+  height: 150px;
   object-fit: cover;
-  box-shadow: 0 2px 2px rgba(0,0,0,.15);
+  border-bottom: 1px solid #eee;
 }
 
 .item .details {
-
+  padding: 10px 12px;
 }
 
 .item .title {
-  font-size: 18px;
-  margin-bottom: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
 }
 
-.item .description {
-  font-size: 14px;
-  margin-bottom: 4px;
+.item .author {
+  font-size: 12px;
+  line-height: 20px;
+  color: gray;
 }
 
 .item .bottom-line {
-  margin-bottom: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10px;
+  height: 20px;
+  color: #555;
 }
 
 .item .bottom-line button {

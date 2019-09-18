@@ -7,6 +7,11 @@ import * as toast from '/vendor/beaker-app-stdlib/js/com/toast.js'
 import { writeToClipboard } from '/vendor/beaker-app-stdlib/js/clipboard.js'
 import * as pins from '../lib/pins.js'
 import pinsViewCSS from '../../css/views/pins.css.js'
+import '../com/subview-tabs.js'
+
+const SUBVIEWS = [
+  {id: 'pins', label: 'Pins'}
+]
 
 class PinsView extends LitElement {
   static get properties() {
@@ -41,6 +46,13 @@ class PinsView extends LitElement {
     }
     return html`
       <link rel="stylesheet" href="/vendor/beaker-app-stdlib/css/fontawesome.css">
+      <div class="header">
+        <subview-tabs
+          .items=${SUBVIEWS}
+          current="pins"
+        ></subview-tabs>
+        <div class="spacer"></div>
+      </div>
       <div class="pins">
         ${repeat(this.pins, pin => html`
           <a
@@ -52,15 +64,15 @@ class PinsView extends LitElement {
             @dragleave=${e => this.onDragleave(e, pin)}
             @drop=${e => this.onDrop(e, pin)}
           >
-            <div class="thumb-container">
-              <img src=${'asset:favicon:' + pin.href} class="thumb"/>
+            <img src=${'asset:thumb:' + pin.href + '?cache_buster=' + Date.now()} class="thumb"/>
+            <div class="details">
+              <div class="title">${pin.title}</div>
             </div>
-            <div class="title">${pin.title}</div>
           </a>
         `)}
-          <a class="pin explorer-pin" href="#" @click=${this.onClickAdd}>
-            <i class="fas fa-plus"></i>
-          </a>
+        <a class="pin explorer-pin" href="#" @click=${this.onClickAdd}>
+          <i class="fas fa-plus"></i>
+        </a>
       </div>
     `
   }

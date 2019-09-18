@@ -1,71 +1,79 @@
 import {css} from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-element.js'
 import commonCSS from '/vendor/beaker-app-stdlib/css/common.css.js'
+import viewHeaderCSS from '../view-header.css.js'
 
 const cssStr = css`
 ${commonCSS}
+${viewHeaderCSS}
 
 :host {
   display: block;
-  margin: 0 0 0 180px;
+  margin: 10px 10px 50px 190px;
+}
+
+.header {
+  height: 47px;
 }
 
 .pins {
   display: grid;
   padding: 15px;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  grid-gap: 2px;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  grid-gap: 15px;
   width: 100%;
   user-select: none;
 }
 
 .pin {
-  background: #fff;
-  text-align: center;
-  height: 120px;
-  border-radius: 16px;
+  cursor: pointer;
+  border-radius: 3px;
+  color: inherit;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+  overflow: hidden;
+  user-select: none;
 }
 
 .pin:hover {
-  background: rgb(245, 247, 249);
+  border-color: #bbb;
+  box-shadow: 0 2px 3px rgba(0,0,0,.05);
+  text-decoration: none;
 }
 
-.pin.drag-hover {
-  outline: 3px dashed var(--border-color);
-}
-
-.pin .thumb-container {
-  display: inline-block;
-  margin-top: 26px;
-  background: rgb(245, 247, 249);
-  border-radius: 50%;
-}
-
-.pin:hover .thumb-container {
-  background: rgb(228, 232, 236);
-}
-
-.pin .thumb {
+.pin img {
   display: block;
-  width: 20px;
-  height: 20px;
-  margin: 10px;
+  background: #fff;
+  width: 100%;
+  height: 170px;
   object-fit: scale-down;
+  border-bottom: 1px solid #eee;
 }
 
-.pin .title {
+.pin .details {
+  padding: 10px 12px;
+}
+
+.pin .details > * {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: #34495e;
-  font-size: 12px;
-  max-width: 100px;
-  margin: auto;
-  margin-top: 10px;
+}
+
+.pin .title {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.pin .href {
+  color: gray;
+  font-size: 11px;
 }
 
 .explorer-pin {
   border: 0;
-  background: none;
+  background: #fafafa;
+  text-align: center;
 }
 
 .explorer-pin i {
@@ -74,7 +82,8 @@ ${commonCSS}
 
 .pin.explorer-pin i {
   font-size: 27px;
-  margin-top: 44px;
+  margin-top: 80px;
+  margin-bottom: 80px;
 }
 `
 export default cssStr

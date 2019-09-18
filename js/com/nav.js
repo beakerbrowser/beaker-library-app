@@ -46,7 +46,7 @@ class LibraryNav extends LitElement {
       <link rel="stylesheet" href="/vendor/beaker-app-stdlib/css/fontawesome.css">
       <div class="btn-group">
         <button class="primary" style="padding-right: 22px" @click=${this.onClickNew}>
-          <span class="fas fa-fw fa-plus"></span> New Dat
+          <span class="fas fa-fw fa-plus"></span> Create New...
         </button>
       </div>
       <h5>Start</h5>
@@ -54,7 +54,7 @@ class LibraryNav extends LitElement {
       ${item('bookmarks', 'far fa-star', 'Bookmarks')}
       <br>
       <h5>News</h5>
-      ${item('status-updates', 'far fa-comment-alt', 'Status updates')}
+      ${item('status-updates', 'far fa-comment-alt', 'Social feed')}
       ${''/*item('blog-posts', 'far fa-newspaper', 'Blog posts', true)*/}
       <br>
       <h5>Library</h5>
@@ -68,7 +68,7 @@ class LibraryNav extends LitElement {
       <br>
       <h5>System</h5>
       <a class="item" href=${this.user ? this.user.url : ''} target="_blank">
-        <img class="avatar" src="asset:thumb:${this.user ? this.user.url : ''}">
+        <img class="avatar" src="asset:thumb:${this.user ? this.user.url : ''}?cache_buster=${Date.now()}">
         <span class="label">${this.user ? this.user.title : ''}</span>
         <span class="fas fa-fw fa-external-link-alt"></span>
       </a>
