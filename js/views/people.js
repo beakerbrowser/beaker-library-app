@@ -8,13 +8,11 @@ import { pluralize } from '/vendor/beaker-app-stdlib/js/strings.js'
 import _uniqBy from '/vendor/lodash.uniqby.js'
 import '../com/subview-tabs.js'
 import '../hover-menu.js'
-const UwG = {
-  follows: navigator.importSystemAPI('unwalled-garden-follows')
-}
 
 const SUBVIEWS = [
   {id: 'library', label: 'Library'},
-  {id: 'network', label: 'Network'}
+  {id: 'following', label: 'Following'},
+  {id: 'foafs', label: 'Friends of Friends'}
 ]
 
 const SORT_OPTIONS = {
@@ -45,25 +43,33 @@ class PeopleView extends LitElement {
   constructor () {
     super()
     this.currentSubview = oneof(QP.getParam('subview'), 'library', ['library', 'network', 'feed'])
-    this.currentSort = oneof(QP.getParam('sort'), 'followers', ['followers', 'title'])
+    this.currentSort = oneof(QP.getParam('sort'), 'title', ['followers', 'title'])
     this.currentQuery = ''
     this.items = []
   }
 
   async load () {
     // fetch listing
-    var followedUsers = (await UwG.follows.list({authors: this.user.url})).map(({topic}) => topic)
-    var networkAuthors = [this.user.url].concat(followedUsers.map(f => f.url))
     var items
-    if (this.currentSubview === 'network') {
-      var foafUsers = (await UwG.follows.list({authors: networkAuthors})).map(({topic}) => topic)
-      items = [Object.assign({}, this.user)].concat(followedUsers).concat(foafUsers)
+    var libraryUsers = (await beaker.users.list())
+      .map(u => { u.isOwner = true; return u })
+      .concat(await UwG.library.list({type: 'unwalled.garden/person'}))
+    var followedUsers = (await UwG.follows.list({author: this.user.url})).map(({topic}) => topic)
+    var networkAuthors = [this.user.url].concat(followedUsers.map(f => f.url))
+    if (this.currentSubview === 'foafs') {
+      let foafUsers = (await UwG.follows.list({author: networkAuthors})).map(({topic}) => topic)
+      items = foafUsers.filter(u => (
+        !libraryUsers.find(u2 => u2.url === u.url)
+        && !followedUsers.find(u2 => u2.url === u.url)
+      ))
+    } else if (this.currentSubview === 'following') {
+      items = followedUsers
     } else {
-      items = [Object.assign({}, this.user)].concat(followedUsers)
+      items = libraryUsers
     }
     items = _uniqBy(items, 'url')
     await Promise.all(items.map(async (item) => {
-      item.followers = (await UwG.follows.list({topics: item.url, authors: networkAuthors})).map(({author}) => author)
+      item.followers = (await UwG.follows.list({topic: item.url, author: networkAuthors})).map(({author}) => author)
       item.isLocalUser = this.user.url === item.url
       item.isLocalUserFollowing = !!item.followers.find(f => f.url === this.user.url)
     }))
@@ -130,31 +136,28 @@ class PeopleView extends LitElement {
     const numFollowers = item.followers.length
     const followerNames = item.followers.length ? item.followers.map(f => f.title || 'Anonymous').join(', ') : undefined
     return html`
-      <div class="item">
-        <a class="thumb" href=${item.url}>
+      <a class="item" href=${item.url}>
+        <div class="thumb">
           <img src="asset:thumb:${item.url}?cache_buster=${Date.now()}">
-        </a>
+        </div>
         <div class="details">
-          <div class="title"><a href=${item.url}>${item.title}</a></div>
-          <div class="description">
+          <div class="title">${item.title}</div>
+          <div class="bottom-line">
+            <span class="followers" data-tooltip=${ifDefined(followerNames)}>
+              <span class="far fa-fw fa-user"></span>
+              ${numFollowers}
+            </span>
 
             ${item.isLocalUser
-                ? html`<span class="label">This is me</span>`
-                : item.isOwner ? html`<span class="label">My user</span>` : ''}
-            ${item.description}
-          </div>
-          <div class="bottom-line">
-            ${!item.isLocalUser ? html`
-              <button @click=${e => this.onToggleFollow(e, item)}>
-                <span class="fas fa-fw fa-${item.isLocalUserFollowing ? 'check' : 'rss'}"></span>
-                ${item.isLocalUserFollowing ? 'Following' : 'Follow'}
-              </button>
-            ` : ''}
-            <span class="followers">
-              <span class="far fa-fw fa-user"></span>
-              Followed by
-              <a data-tooltip=${ifDefined(followerNames)}>${numFollowers} ${pluralize(numFollowers, 'user')} in my network</a>
-            </span>
+              ? html`<span class="label">This is me</span>`
+              : item.isOwner
+                ? html`<span class="label">My user</span>` 
+                : html`
+                  <button @click=${e => this.onToggleFollow(e, item)}>
+                    <span class="fas fa-fw fa-${item.isLocalUserFollowing ? 'check' : 'rss'}"></span>
+                    ${item.isLocalUserFollowing ? 'Following' : 'Follow'}
+                  </button>
+                `}
           </div>
         </div>
       </div>
@@ -181,6 +184,7 @@ class PeopleView extends LitElement {
   }
 
   async onToggleFollow (e, item) {
+    e.preventDefault()
     if (item.isLocalUserFollowing) {
       await UwG.follows.remove(item.url)
     } else {
