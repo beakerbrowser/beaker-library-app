@@ -84,7 +84,7 @@ class LibraryNav extends LitElement {
   async onClickNew () {
     var archive = await DatArchive.create()
     toast.create('Website created')
-    beaker.browser.openUrl(archive.url, {setActive: true, isSidebarActive: true, sidebarPanel: 'site'})
+    beaker.browser.openUrl(archive.url, {setActive: true})
     emit(this, 'change-view', {bubbles: true, detail: {view: 'websites'}})
   }
 }
