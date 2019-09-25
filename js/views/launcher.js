@@ -57,8 +57,8 @@ class LauncherView extends LitElement {
           current=${this.currentSubview}
           @change=${this.onChangeSubview}
         ></subview-tabs>
-        <div class="spacer"></div>
-        <button class="big transparent" @click=${this.onClickAdd}>
+        <hr>
+        <button @click=${this.onClickAdd} style="margin-left: 10px">
           <span class="fas fa-fw fa-plus"></span> Add Pin
         </button>
       </div>

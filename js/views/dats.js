@@ -126,10 +126,10 @@ class DatsView extends LitElement {
   // =
 
   render () {
-    document.title = ucfirst(this.currentView)
+    const isViewingTrash = this.currentView === 'trash'
+    document.title = isViewingTrash ? 'Trash' : 'Dat Library'
     let items = this.items
 
-    const isViewingTrash = this.currentView === 'trash'
     return html`
       <link rel="stylesheet" href="/vendor/beaker-app-stdlib/css/fontawesome.css">
       <div class="header">
@@ -152,8 +152,8 @@ class DatsView extends LitElement {
             @change=${this.onChangeSort}
           ></hover-menu>
         ` : ''}
-        <div class="spacer"></div>
-        <button class="primary big" @click=${this.onClickNew}>
+        <hr>
+        <button class="" @click=${this.onClickNew} style="margin-left: 10px">
           <span class="fas fa-fw fa-plus"></span> Create New Dat
         </button>
       </div>

@@ -10,7 +10,7 @@ const cssStr = css`
 }
 
 beaker-status {
-  border-color: #ddd;
+  border-color: #ccc;
 }
 `
 export default cssStr

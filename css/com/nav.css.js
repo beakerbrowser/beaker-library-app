@@ -20,7 +20,6 @@ ${buttonsCSS}
   flex-direction: column;
   font-size: 12px;
   background: #fff;
-  border-right: 1px solid #ccc;
   user-select: none;
 }
 
@@ -32,14 +31,16 @@ a.item {
   text-decoration: none;
   box-sizing: border-box;
   cursor: pointer;
+  border-top-right-radius: 16px;
+  border-bottom-right-radius: 16px;
 }
 
 a.item:hover {
-  background: #f5f5f5;
+  background: #f0f0f5;
 }
 
 a.item.current {
-  background: #f5f5f5;
+  background: #f0f0f5;
 }
 
 a.item.todo {
@@ -87,7 +88,7 @@ hr {
 
 .search-container {
   position: relative;
-  margin: 0 7px 10px;
+  margin: 0 0 10px 7px;
 }
 
 input.search {
@@ -96,8 +97,8 @@ input.search {
   background: transparent;
   outline: 0;
   box-sizing: border-box;
-  width: 155px;
-  border-radius: 4px;
+  width: 172px;
+  border-radius: 16px;
   height: 27px;
   padding-left: 32px;
 }

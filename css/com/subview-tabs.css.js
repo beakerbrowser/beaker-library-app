@@ -16,11 +16,11 @@ a {
 }
 
 a:hover {
-  background: #eee;
+  background: #f0f0f5;
 }
 
 a.current {
-  background: #eee;
+  background: #f0f0f5;
 }
 `
 export default cssStr

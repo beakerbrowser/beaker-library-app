@@ -22,7 +22,7 @@ ${emptyCSS}
 .pins {
   display: grid;
   padding: 15px;
-  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   grid-gap: 15px;
   width: 100%;
   user-select: none;
@@ -54,12 +54,12 @@ ${emptyCSS}
   background: #fff;
   z-index: 1;
   border-radius: 4px;
-  width: 38px;
-  height: 38px;
+  width: 34px;
+  height: 34px;
 }
 
 .pin .details {
-  padding: 140px 12px 10px;
+  padding: 120px 12px 10px;
 }
 
 .pin .details > * {
@@ -69,7 +69,7 @@ ${emptyCSS}
 }
 
 .pin .title {
-  font-size: 14px;
+  font-size: 13px;
   line-height: 20px;
 }
 

@@ -35,6 +35,7 @@ a:hover {
 
 .listing {
   margin: 6px 0px;
+  border-top: 1px solid #f0f0f5;
 }
 
 .bookmark {
@@ -43,10 +44,11 @@ a:hover {
   padding: 10px;
   color: #555;
   user-select: none;
+  border-bottom: 1px solid #f0f0f5;
 }
 
 .bookmark:hover {
-  background: #f5f5f5;
+  background: #f5f5fa;
   text-decoration: none;
 }
 

@@ -9,7 +9,7 @@ ${colorsCSS}
   max-width: 500px;
   box-sizing: border-box;
   background: #fff;
-  border: 1px solid #ddd;
+  border: 1px solid #ccc;
   padding: 16px;
   border-radius: 4px;
   margin-bottom: 10px;

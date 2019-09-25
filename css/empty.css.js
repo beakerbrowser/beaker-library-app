@@ -2,7 +2,7 @@ import { css } from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-element.js
 
 const cssStr = css`
 .empty {
-  background: #f5f5f5;
+  background: #f0f0f5;
   width: 300px;
   height: 190px;
   padding-top: 110px;

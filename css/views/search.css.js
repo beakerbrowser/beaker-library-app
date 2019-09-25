@@ -12,7 +12,7 @@ ${viewHeaderCSS}
 
 :host {
   display: block;
-  margin: 0px 10px 50px 190px;
+  margin: 0px 10px 50px 200px;
 }
 
 a {
@@ -25,7 +25,6 @@ a:hover {
 }
 
 .header-title {
-  padding: 0 10px;
   font-size: 14px;
 }
 
@@ -34,7 +33,7 @@ a:hover {
 }
 
 .empty {
-  background: #f5f5f5;
+  background: #f0f0f5;
   max-width: 500px;
   border-radius: 4px;
   color: #555;
@@ -59,14 +58,14 @@ a:hover {
 .search-engines .list {
   display: flex;
   align-items: center;
-  border: 1px solid #ddd;
+  border: 1px solid #ccc;
   background: #fff;
 }
 
 .search-engines .list a {
   flex: 0 0 60px;
   text-align: center;
-  border-right: 1px solid #ddd;
+  border-right: 1px solid #ccc;
   padding: 8px 0;
   cursor: pointer;
 }
