@@ -9,7 +9,8 @@ class LibraryNav extends LitElement {
   static get properties () {
     return {
       user: {type: Object},
-      currentView: {type: String}
+      currentView: {type: String},
+      currentQuery: {type: String}
     }
   }
 
@@ -19,7 +20,14 @@ class LibraryNav extends LitElement {
 
   constructor () {
     super()
+    this.currentQuery = ''
   }
+
+  clearSearch () {
+    this.currentQuery = ''
+    this.shadowRoot.querySelector('input').value = ''
+  }
+
   // rendering
   // =
 
@@ -39,27 +47,19 @@ class LibraryNav extends LitElement {
     }
     return html`
       <link rel="stylesheet" href="/vendor/beaker-app-stdlib/css/fontawesome.css">
-      <div class="btn-group">
-        <button class="primary" style="padding-right: 22px" @click=${this.onClickNew}>
-          <span class="fas fa-fw fa-plus"></span> Create New...
-        </button>
+      <div class="search-container">
+        <input @keyup=${this.onKeyupQuery} placeholder="Search" class="search" value=${this.currentQuery} />
+        <i class="fa fa-search"></i>
       </div>
-      <h5>Start</h5>
-      ${item('pins', 'fas fa-rocket', 'Launcher')}
-      ${item('bookmarks', 'far fa-star', 'Bookmarks')}
-      <br>
-      <h5>News</h5>
-      ${item('status-updates', 'far fa-comment-alt', 'Social feed')}
-      ${''/*item('blog-posts', 'far fa-newspaper', 'Blog posts', true)*/}
+      ${item('launcher', 'fas fa-rocket', 'Launcher')}
+      ${item('status-updates', 'far fa-comment-alt', 'Status Feed')}
       <br>
       <h5>Library</h5>
-      ${''/*item('music', 'fas fa-music', 'Music', true)}
-      ${item('photos', 'fas fa-image', 'Photos', true)}
-      ${item('podcasts', 'fas fa-microphone-alt', 'Podcasts', true)}
-  ${item('videos', 'fas fa-film', 'Videos', true)*/}
+      ${item('bookmarks', 'far fa-star', 'Bookmarks')}
+      ${item('dats', 'far fa-folder', 'Dat Library')}
+      <br>
+      <h5>Network</h5>
       ${item('people', libTools.getFAIcon('people'), 'People')}
-      ${item('websites', libTools.getFAIcon('websites'), 'Websites')}
-      ${item('archives', libTools.getFAIcon('archives'), 'Archives')}
       <br>
       <h5>System</h5>
       <a class="item" href=${this.user ? this.user.url : ''} target="_blank">
@@ -85,7 +85,54 @@ class LibraryNav extends LitElement {
     var archive = await DatArchive.create()
     toast.create('Website created')
     beaker.browser.openUrl(archive.url, {setActive: true})
-    emit(this, 'change-view', {bubbles: true, detail: {view: 'websites'}})
+  }
+
+  onKeyupQuery (e) {
+    this.currentQuery = e.currentTarget.value
+    emit(this, 'change-query', {bubbles: true, detail: {value: this.currentQuery}})
   }
 }
 customElements.define('library-nav', LibraryNav)
+
+
+/*
+
+      <h5>Start</h5>
+      ${item('pins', 'fas fa-rocket', 'Launcher')}
+      ${item('bookmarks', 'far fa-star', 'Bookmarks')}
+      <br>
+      <h5>News</h5>
+      ${item('status-updates', 'far fa-comment-alt', 'Social feed')}
+      ${item('blog-posts', 'far fa-newspaper', 'Blog posts', true)}
+      ${item('events', 'far fa-calendar-alt', 'Events', true)}
+      <br>
+      <h5>Web</h5>
+      ${item('applications', 'far fa-window-maximize', 'Applications', true)}
+      ${item('websites', libTools.getFAIcon('websites'), 'Websites')}
+      <br>
+      <h5>Media</h5>
+      ${item('music', 'fas fa-music', 'Music', true)}
+      ${item('photos', 'fas fa-image', 'Photos', true)}
+      ${item('podcasts', 'fas fa-microphone-alt', 'Podcasts', true)}
+      ${item('videos', 'fas fa-film', 'Videos', true)}
+      <br>
+      <h5>Data</h5>
+      ${item('modules', libTools.getFAIcon('modules'), 'Code Modules', true)}
+      ${item('archives', libTools.getFAIcon('archives'), 'File Archives')}
+      ${item('datasets', 'fas fa-table', 'Datasets', true)}
+      <br>
+      <h5>Network</h5>
+      ${item('people', libTools.getFAIcon('people'), 'People')}
+      ${item('groups', 'fas fa-user-friends', 'Groups', true)}
+      ${item('organizations', 'far fa-building', 'Organizations', true)}
+      <br>
+      <h5>System</h5>
+      <a class="item" href=${this.user ? this.user.url : ''} target="_blank">
+        <img class="avatar" src="asset:thumb:${this.user ? this.user.url : ''}?cache_buster=${Date.now()}">
+        <span class="label">${this.user ? this.user.title : ''}</span>
+        <span class="fas fa-fw fa-external-link-alt"></span>
+      </a>
+      ${item('cloud-peers', 'fas fa-cloud', 'Cloud Peers', true)}
+      ${item('settings', 'fas fa-cog', 'Settings', true)}
+      ${item('trash', 'fas fa-trash', 'Trash')}
+      */

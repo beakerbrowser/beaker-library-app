@@ -14,7 +14,7 @@ ${viewHeaderCSS}
 
 :host {
   display: block;
-  margin: 10px 10px 50px 190px;
+  margin: 0px 10px 50px 190px;
 }
 
 @media (min-width: 1300px) {
@@ -31,6 +31,10 @@ a {
 
 a:hover {
   text-decoration: underline;
+}
+
+.listing {
+  margin: 6px 0px;
 }
 
 .bookmark {

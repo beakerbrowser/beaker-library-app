@@ -6,7 +6,8 @@ const cssStr = css`
   align-items: center;
   height: 26px;
   border-bottom: 1px solid #ccc;
-  padding: 10px;
+  padding: 10px 0;
+  user-select: none;
 }
 
 .header button {
@@ -23,6 +24,17 @@ const cssStr = css`
 
 .header button .fa-fw {
   font-size: 11px;
+}
+
+.header hr {
+  border: 0;
+  border-left: 1px solid #ddd;
+  height: 16px;
+  margin: 0;
+}
+
+.header hover-menu {
+  margin: 0 6px;
 }
 
 .search-container {

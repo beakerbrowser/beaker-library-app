@@ -16,7 +16,7 @@ ${viewHeaderCSS}
 
 :host {
   display: block;
-  margin: 10px 10px 50px 190px;
+  margin: 0px 10px 50px 190px;
 }
 
 @media (min-width: 1300px) {
@@ -48,6 +48,7 @@ a:hover {
   color: inherit;
   border-radius: 3px;
   border: 1px solid #ccc;
+  background: #fff;
   user-select: none;
 }
 

@@ -1,14 +1,18 @@
 import {css} from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-element.js'
 import commonCSS from '/vendor/beaker-app-stdlib/css/common.css.js'
+import buttonsCSS from '/vendor/beaker-app-stdlib/css/buttons2.css.js'
 import viewHeaderCSS from '../view-header.css.js'
+import emptyCSS from '../empty.css.js'
 
 const cssStr = css`
 ${commonCSS}
+${buttonsCSS}
 ${viewHeaderCSS}
+${emptyCSS}
 
 :host {
   display: block;
-  margin: 10px 10px 50px 190px;
+  margin: 0px 10px 50px 190px;
 }
 
 .header {
@@ -26,10 +30,12 @@ ${viewHeaderCSS}
 
 .pin {
   cursor: pointer;
+  position: relative;
   border-radius: 3px;
   color: inherit;
   border-radius: 3px;
   border: 1px solid #ccc;
+  background: #fff;
   overflow: hidden;
   user-select: none;
 }
@@ -40,17 +46,20 @@ ${viewHeaderCSS}
   text-decoration: none;
 }
 
-.pin img {
-  display: block;
+.pin .favicon {
+  position: absolute;
+  top: 50px;
+  left: 50%;
+  transform: translateX(-50%);
   background: #fff;
-  width: 100%;
-  height: 170px;
-  object-fit: scale-down;
-  border-bottom: 1px solid #eee;
+  z-index: 1;
+  border-radius: 4px;
+  width: 38px;
+  height: 38px;
 }
 
 .pin .details {
-  padding: 10px 12px;
+  padding: 140px 12px 10px;
 }
 
 .pin .details > * {
@@ -61,7 +70,6 @@ ${viewHeaderCSS}
 
 .pin .title {
   font-size: 14px;
-  font-weight: 500;
   line-height: 20px;
 }
 
@@ -70,20 +78,5 @@ ${viewHeaderCSS}
   font-size: 11px;
 }
 
-.explorer-pin {
-  border: 0;
-  background: #fafafa;
-  text-align: center;
-}
-
-.explorer-pin i {
-  color: rgb(222, 228, 232);
-}
-
-.pin.explorer-pin i {
-  font-size: 27px;
-  margin-top: 80px;
-  margin-bottom: 80px;
-}
 `
 export default cssStr

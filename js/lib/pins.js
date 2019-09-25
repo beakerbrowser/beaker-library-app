@@ -30,7 +30,7 @@ function defaults () {
     {title: 'Social Feed', href: 'beaker://library?view=status-updates'},
     {title: 'Bookmarks', href: 'beaker://library?view=bookmarks'},
     {title: 'People', href: 'beaker://library?view=people'},
-    {title: 'Websites', href: 'beaker://library?view=websites'},
+    {title: 'Dat Library', href: 'beaker://library?view=dats'},
     {title: 'Documentation', href: 'https://beakerbrowser.com/docs'},
     {title: 'Report an issue', href: 'https://github.com/beakerbrowser/beaker/issues'}
   ]

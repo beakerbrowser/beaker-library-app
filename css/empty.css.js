@@ -13,6 +13,7 @@ const cssStr = css`
   font-size: 15px;
   line-height: 2;
   margin: 50px auto;
+  box-sizing: content-box;
 }
 
 .empty .far,

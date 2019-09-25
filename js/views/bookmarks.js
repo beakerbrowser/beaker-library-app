@@ -3,13 +3,12 @@ import { repeat } from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-html/di
 import bookmarksViewCSS from '../../css/views/bookmarks.css.js'
 import * as QP from '../lib/query-params.js'
 import { oneof } from '../lib/validation.js'
-import '../com/subview-tabs.js'
 import '../hover-menu.js'
 
-const SUBVIEWS = [
-  {id: 'library', label: 'Library'},
-  {id: 'network', label: 'Network'}
-]
+const SUBVIEW_OPTIONS = {
+  mine: 'By Me',
+  network: 'By Followed Users'
+}
 
 const SORT_OPTIONS = {
   createdAt: 'Latest',
@@ -21,9 +20,7 @@ class BookmarksView extends LitElement {
     return {
       user: {type: Object},
       items: {type: Array},
-      currentView: {type: String},
       currentSubview: {type: String},
-      currentQuery: {type: String},
       currentSort: {type: String},
     }
   }
@@ -38,9 +35,8 @@ class BookmarksView extends LitElement {
 
   constructor () {
     super()
-    this.currentSubview = oneof(QP.getParam('subview'), 'library', ['library', 'network'])
+    this.currentSubview = oneof(QP.getParam('subview'), 'mine', ['mine', 'network'])
     this.currentSort = oneof(QP.getParam('sort'), 'createdAt', ['createdAt', 'title'])
-    this.currentQuery = ''
     this.items = []
   }
 
@@ -56,7 +52,7 @@ class BookmarksView extends LitElement {
     }
     var items = await UwG.bookmarks.list({
       author,
-      isOwner: this.currentSubview === 'library' ? true : undefined,
+      isOwner: this.currentSubview === 'mine' ? true : undefined,
       sortBy: this.currentSort,
       reverse: this.currentSort === 'createdAt'
     })
@@ -70,39 +66,24 @@ class BookmarksView extends LitElement {
   render () {
     document.title = 'Bookmarks'
     let items = this.items
-    
-    // apply query filter
-    if (this.currentQuery) {
-      let q = this.currentQuery.toLowerCase()
-      items = items.filter(item => (
-        (item.title || '').toLowerCase().includes(q)
-        || (item.description || '').toLowerCase().includes(q)
-        || (item.href || '').toLowerCase().includes(q)
-        || (item.tags.join(' ') || '').toLowerCase().includes(q)
-      ))
-    }
 
     return html`
       <link rel="stylesheet" href="/vendor/beaker-app-stdlib/css/fontawesome.css">
       <div class="header">
-        <subview-tabs
-          .items=${SUBVIEWS}
-          current=${this.currentSubview}
+        <hover-menu
+          icon="fas fa-filter"
+          .options=${SUBVIEW_OPTIONS}
+          current=${SUBVIEW_OPTIONS[this.currentSubview]}
           @change=${this.onChangeSubview}
-        ></subview-tabs>
+        ></hover-menu>
+        <hr>
+        <hover-menu
+          icon="fas fa-sort-amount-down"
+          .options=${SORT_OPTIONS}
+          current=${SORT_OPTIONS[this.currentSort]}
+          @change=${this.onChangeSort}
+        ></hover-menu>
         <div class="spacer"></div>
-        ${['library', 'network'].includes(this.currentSubview) ? html`
-          <hover-menu
-            icon="fas fa-sort-amount-down"
-            .options=${SORT_OPTIONS}
-            current=${SORT_OPTIONS[this.currentSort]}
-            @change=${this.onChangeSort}
-          ></hover-menu>
-        ` : ''}
-        <div class="search-container">
-          <input @keyup=${this.onKeyupQuery} placeholder="Search" class="search" value=${this.currentQuery} />
-          <i class="fa fa-search"></i>
-        </div>
       </div>
       ${!items.length
         ? html`<div class="empty"><div><span class="far fa-sad-tear"></span></div>No bookmarks found.</div>`
@@ -150,10 +131,6 @@ class BookmarksView extends LitElement {
     this.currentSort = e.detail.id
     QP.setParams({sort: this.currentSort})
     this.load()
-  }
-
-  onKeyupQuery (e) {
-    this.currentQuery = e.currentTarget.value
   }
 
   onClickAuthor (e, item) {

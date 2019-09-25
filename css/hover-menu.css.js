@@ -10,6 +10,7 @@ ${colorsCSS}
   color: var(--color-text);
   padding: 6px 6px;
   cursor: pointer;
+  user-select: none;
 }
 
 .dropdown:hover {

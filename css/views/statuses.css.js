@@ -2,15 +2,17 @@ import {css} from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-element.js'
 import buttonsCSS from '/vendor/beaker-app-stdlib/css/buttons2.css.js'
 import tooltipCSS from '/vendor/beaker-app-stdlib/css/tooltip.css.js'
 import viewHeaderCSS from '../view-header.css.js'
+import emptyCSS from '../empty.css.js'
 
 const cssStr = css`
 ${buttonsCSS}
 ${tooltipCSS}
 ${viewHeaderCSS}
+${emptyCSS}
 
 :host {
   display: block;
-  margin: 10px 10px 50px 190px;
+  margin: 0px 10px 50px 190px;
 }
 
 @media (min-width: 1300px) {

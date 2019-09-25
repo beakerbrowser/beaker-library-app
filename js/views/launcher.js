@@ -6,26 +6,31 @@ import { AddPinPopup } from '../com/add-pin-popup.js'
 import * as toast from '/vendor/beaker-app-stdlib/js/com/toast.js'
 import { writeToClipboard } from '/vendor/beaker-app-stdlib/js/clipboard.js'
 import * as pins from '../lib/pins.js'
-import pinsViewCSS from '../../css/views/pins.css.js'
+import { oneof } from '../lib/validation.js'
+import * as QP from '../lib/query-params.js'
+import launcherViewCSS from '../../css/views/launcher.css.js'
 import '../com/subview-tabs.js'
 
 const SUBVIEWS = [
-  {id: 'pins', label: 'Pins'}
+  {id: 'pins', label: html`<span class="fas fa-fw fa-thumbtack"></span> Pins`},
+  {id: 'whats-new', label: html`<span class="fas fa-fw fa-star-of-life"></span> What's New`},
 ]
 
-class PinsView extends LitElement {
+class LauncherView extends LitElement {
   static get properties() {
     return {
+      currentSubview: {type: String},
       pins: {type: Array}
     }
   }
 
   static get styles () {
-    return pinsViewCSS
+    return launcherViewCSS
   }
 
   constructor () {
     super()
+    this.currentSubview = oneof(QP.getParam('subview'), 'pins', ['pins', 'whats-new'])
     this.pins = []
     this.draggedPin = null
     this.dragStartTime = 0
@@ -49,10 +54,23 @@ class PinsView extends LitElement {
       <div class="header">
         <subview-tabs
           .items=${SUBVIEWS}
-          current="pins"
+          current=${this.currentSubview}
+          @change=${this.onChangeSubview}
         ></subview-tabs>
         <div class="spacer"></div>
+        <button class="big transparent" @click=${this.onClickAdd}>
+          <span class="fas fa-fw fa-plus"></span> Add Pin
+        </button>
       </div>
+      ${this.currentSubview === 'pins' ? this.renderPins() : undefined}
+      ${this.currentSubview === 'whats-new' ? html`
+        <div class="empty"><div><span class="fas fa-toolbox"></span></div>Under Construction</div>
+      ` : ''}
+    `
+  }
+
+  renderPins () {
+    return html`
       <div class="pins">
         ${repeat(this.pins, pin => html`
           <a
@@ -64,21 +82,24 @@ class PinsView extends LitElement {
             @dragleave=${e => this.onDragleave(e, pin)}
             @drop=${e => this.onDrop(e, pin)}
           >
-            <img src=${'asset:thumb:' + pin.href + '?cache_buster=' + Date.now()} class="thumb"/>
+            <img src=${'asset:favicon:' + pin.href + '?cache_buster=' + Date.now()} class="favicon"/>
             <div class="details">
               <div class="title">${pin.title}</div>
             </div>
           </a>
         `)}
-        <a class="pin explorer-pin" href="#" @click=${this.onClickAdd}>
-          <i class="fas fa-plus"></i>
-        </a>
       </div>
     `
   }
 
   // events
   // =
+
+  onChangeSubview (e) {
+    this.currentSubview = e.detail.id
+    QP.setParams({subview: this.currentSubview})
+    this.load()
+  }
 
   async onClickAdd () {
     try {
@@ -183,4 +204,4 @@ class PinsView extends LitElement {
   }
 }
 
-customElements.define('pins-view', PinsView)
+customElements.define('launcher-view', LauncherView)

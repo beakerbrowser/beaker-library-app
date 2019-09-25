@@ -8,7 +8,8 @@ import '../com/subview-tabs.js'
 import '../hover-menu.js'
 
 const SUBVIEWS = [
-  {id: 'feed', label: 'Feed'}
+  {id: 'feed', label: html`<span class="fas fa-fw fa-list"></span> Feed`},
+  {id: 'notifications', label: html`<span class="far fa-fw fa-bell"></span> Notifications`},
 ]
 
 class StatusesView extends LitElement {
@@ -38,7 +39,7 @@ class StatusesView extends LitElement {
   // =
 
   render () {
-    document.title = 'Status Updates'
+    document.title = 'Status Feed'
     
     return html`
       <link rel="stylesheet" href="/vendor/beaker-app-stdlib/css/fontawesome.css">
@@ -49,7 +50,10 @@ class StatusesView extends LitElement {
           @change=${this.onChangeSubview}
         ></subview-tabs>
       </div>
-      <beaker-status-feed .user=${this.user}></beaker-status-feed>
+      ${this.currentSubview === 'feed' ? html`<beaker-status-feed .user=${this.user}></beaker-status-feed>` : ''}
+      ${this.currentSubview === 'notifications' ? html`
+        <div class="empty"><div><span class="fas fa-toolbox"></span></div>Under Construction</div>
+      ` : ''}
     `
   }
 

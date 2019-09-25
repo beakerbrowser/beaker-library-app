@@ -19,21 +19,9 @@ ${buttonsCSS}
   display: flex;
   flex-direction: column;
   font-size: 12px;
-  background: #fafafa;
+  background: #fff;
   border-right: 1px solid #ccc;
   user-select: none;
-}
-
-.btn-group {
-  margin: 0 10px 8px;
-}
-
-.btn-group :first-child {
-  flex: 1;
-}
-
-.dropdown-item {
-  padding: 7px 15px;
 }
 
 a.item {
@@ -47,11 +35,11 @@ a.item {
 }
 
 a.item:hover {
-  background: #eee;
+  background: #f5f5f5;
 }
 
 a.item.current {
-  background: #eee;
+  background: #f5f5f5;
 }
 
 a.item.todo {
@@ -95,6 +83,31 @@ hr {
   border-top: 1px solid #ddd;
   width: 154px;
   margin: 10px;
+}
+
+.search-container {
+  position: relative;
+  margin: 0 7px 10px;
+}
+
+input.search {
+  font-size: 12px;
+  border: 1px solid #ccc;
+  background: transparent;
+  outline: 0;
+  box-sizing: border-box;
+  width: 155px;
+  border-radius: 4px;
+  height: 27px;
+  padding-left: 32px;
+}
+
+.search-container > i.fa-search  {
+  position: absolute;
+  left: 12px;
+  top: 8px;
+  color: rgba(0,0,0,.6);
+  font-size: 11px;
 }
 
 `

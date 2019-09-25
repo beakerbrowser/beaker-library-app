@@ -4,16 +4,13 @@ import { ifDefined } from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-html
 import peopleViewCSS from '../../css/views/people.css.js'
 import * as QP from '../lib/query-params.js'
 import { oneof } from '../lib/validation.js'
-import { pluralize } from '/vendor/beaker-app-stdlib/js/strings.js'
 import _uniqBy from '/vendor/lodash.uniqby.js'
-import '../com/subview-tabs.js'
 import '../hover-menu.js'
 
-const SUBVIEWS = [
-  {id: 'library', label: 'Library'},
-  {id: 'following', label: 'Following'},
-  {id: 'foafs', label: 'Friends of Friends'}
-]
+const SUBVIEW_OPTIONS = {
+  following: 'Following',
+  foafs: 'Extended Network'
+}
 
 const SORT_OPTIONS = {
   followers: 'Most followed',
@@ -27,7 +24,6 @@ class PeopleView extends LitElement {
       items: {type: Array},
       currentView: {type: String},
       currentSubview: {type: String},
-      currentQuery: {type: String},
       currentSort: {type: String},
     }
   }
@@ -42,9 +38,8 @@ class PeopleView extends LitElement {
 
   constructor () {
     super()
-    this.currentSubview = oneof(QP.getParam('subview'), 'library', ['library', 'network', 'feed'])
+    this.currentSubview = oneof(QP.getParam('subview'), 'following', ['following', 'foafs'])
     this.currentSort = oneof(QP.getParam('sort'), 'title', ['followers', 'title'])
-    this.currentQuery = ''
     this.items = []
   }
 
@@ -63,9 +58,7 @@ class PeopleView extends LitElement {
         && !followedUsers.find(u2 => u2.url === u.url)
       ))
     } else if (this.currentSubview === 'following') {
-      items = followedUsers
-    } else {
-      items = libraryUsers
+      items = followedUsers.concat(libraryUsers)
     }
     items = _uniqBy(items, 'url')
     await Promise.all(items.map(async (item) => {
@@ -91,26 +84,17 @@ class PeopleView extends LitElement {
   render () {
     document.title = 'People'
     let items = this.items
-    
-    // apply query filter
-    if (this.currentQuery) {
-      let q = this.currentQuery.toLowerCase()
-      items = items.filter(item => (
-        (item.title || '').toLowerCase().includes(q)
-        || (item.description || '').toLowerCase().includes(q)
-        || (item.url || '').toLowerCase().includes(q)
-      ))
-    }
 
     return html`
       <link rel="stylesheet" href="/vendor/beaker-app-stdlib/css/fontawesome.css">
       <div class="header">
-        <subview-tabs
-          .items=${SUBVIEWS}
-          current=${this.currentSubview}
+        <hover-menu
+          icon="fas fa-filter"
+          .options=${SUBVIEW_OPTIONS}
+          current=${SUBVIEW_OPTIONS[this.currentSubview]}
           @change=${this.onChangeSubview}
-        ></subview-tabs>
-        <div class="spacer"></div>
+        ></hover-menu>
+        <hr>
         <hover-menu
           right
           icon="fas fa-sort-amount-down"
@@ -118,10 +102,7 @@ class PeopleView extends LitElement {
           current=${SORT_OPTIONS[this.currentSort]}
           @change=${this.onChangeSort}
         ></hover-menu>
-        <div class="search-container">
-          <input @keyup=${this.onKeyupQuery} placeholder="Search" class="search" value=${this.currentQuery} />
-          <i class="fa fa-search"></i>
-        </div>
+        <div class="spacer"></div>
       </div>
       ${!items.length
         ? html`<div class="empty"><div><span class="far fa-sad-tear"></span></div>No people found.</div>`
@@ -177,10 +158,6 @@ class PeopleView extends LitElement {
     this.currentSort = e.detail.id
     QP.setParams({sort: this.currentSort})
     this.load()
-  }
-
-  onKeyupQuery (e) {
-    this.currentQuery = e.currentTarget.value
   }
 
   async onToggleFollow (e, item) {

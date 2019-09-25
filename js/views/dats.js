@@ -8,13 +8,13 @@ import datsViewCSS from '../../css/views/dats.css.js'
 import * as QP from '../lib/query-params.js'
 import { oneof } from '../lib/validation.js'
 import libTools from '/vendor/library-tools/index.build.js'
-import '../com/subview-tabs.js'
 import '../hover-menu.js'
 
-const SUBVIEWS = [
-  {id: 'library', label: 'Library'},
-  {id: 'network', label: 'Network'}
-]
+const SUBVIEW_OPTIONS = {
+  library: 'Saved',
+  mine: 'By Me',
+  network: 'By Followed Users'
+}
 
 const SORT_OPTIONS = {
   mtime: 'Recently updated',
@@ -28,7 +28,6 @@ class DatsView extends LitElement {
       items: {type: Array},
       currentView: {type: String},
       currentSubview: {type: String},
-      currentQuery: {type: String},
       currentSort: {type: String},
     }
   }
@@ -43,9 +42,8 @@ class DatsView extends LitElement {
 
   constructor () {
     super()
-    this.currentSubview = oneof(QP.getParam('subview'), 'library', ['library', 'network'])
+    this.currentSubview = oneof(QP.getParam('subview'), 'library', ['library', 'mine', 'network'])
     this.currentSort = oneof(QP.getParam('sort'), 'mtime', ['mtime', 'title'])
-    this.currentQuery = ''
     this.items = []
   }
 
@@ -55,13 +53,12 @@ class DatsView extends LitElement {
     if (this.currentView === 'trash') {
       items = await beaker.archives.listTrash()
     } else {
-      items = await UwG.library.list({
-        type: libTools.categoryToType(this.currentView),
-        isSaved: this.currentSubview === 'library' ? true : false,
-        isOwner: this.currentSubview === 'library' ? undefined : false,
-        visibility: this.currentSubview === 'library' ? undefined : 'public',
-        sortBy: this.currentSort
-      })
+      let [isSaved, isOwner, visibility] = [undefined, undefined, undefined]
+      if (this.currentSubview !== 'network') isSaved = true
+      if (this.currentSubview === 'mine') isOwner = true
+      else if (this.currentSubview === 'network') isOwner = false
+      if (this.currentSubview === 'network') visibility = 'public'
+      items = await UwG.library.list({isSaved, isOwner, visibility, sortBy: this.currentSort})
     }
 
     // manually filter for 'archives' view
@@ -96,11 +93,19 @@ class DatsView extends LitElement {
           this.load()
         }})
       } else {
-        items.push({icon: 'fas fa-undo', label: 'Restore from trash', click: async () => {
-          await UwG.library.configure(item.key, {isSaved: true})
-          toast.create('Restored')
-          this.load()
-        }})
+        if (item.meta.isOwner) {
+          items.push({icon: 'fas fa-undo', label: 'Restore from trash', click: async () => {
+            await UwG.library.configure(item.key, {isSaved: true})
+            toast.create('Restored')
+            this.load()
+          }})
+        } else {
+          items.push({icon: 'fas fa-save', label: 'Save to library', click: async () => {
+            await UwG.library.configure(item.key, {isSaved: true})
+            toast.create('Saved')
+            this.load()
+          }})
+        }
       }
     }
   
@@ -123,16 +128,6 @@ class DatsView extends LitElement {
   render () {
     document.title = ucfirst(this.currentView)
     let items = this.items
-    
-    // apply query filter
-    if (this.currentQuery) {
-      let q = this.currentQuery.toLowerCase()
-      items = items.filter(item => (
-        (item.meta.title || '').toLowerCase().includes(q)
-        || (item.meta.description || '').toLowerCase().includes(q)
-        || (item.key || '').toLowerCase().includes(q)
-      ))
-    }
 
     const isViewingTrash = this.currentView === 'trash'
     return html`
@@ -141,26 +136,26 @@ class DatsView extends LitElement {
         ${isViewingTrash 
           ? html`<button @click=${this.onEmptyTrash}><span class="fas fa-fw fa-trash"></span> Empty trash</button>`
           : html`
-            <subview-tabs
-              .items=${SUBVIEWS}
-              current=${this.currentSubview}
+            <hover-menu
+              icon="fas fa-filter"
+              .options=${SUBVIEW_OPTIONS}
+              current=${SUBVIEW_OPTIONS[this.currentSubview]}
               @change=${this.onChangeSubview}
-            ></subview-tabs>
+            ></hover-menu>
           `}
-        <div class="spacer"></div>
-        ${['library', 'network'].includes(this.currentSubview) ? html`
+        <hr>
+        ${!isViewingTrash ? html`
           <hover-menu
-            right
             icon="fas fa-sort-amount-down"
             .options=${SORT_OPTIONS}
             current=${SORT_OPTIONS[this.currentSort]}
             @change=${this.onChangeSort}
           ></hover-menu>
         ` : ''}
-        <div class="search-container">
-          <input @keyup=${this.onKeyupQuery} placeholder="Search" class="search" value=${this.currentQuery} />
-          <i class="fa fa-search"></i>
-        </div>
+        <div class="spacer"></div>
+        <button class="primary big" @click=${this.onClickNew}>
+          <span class="fas fa-fw fa-plus"></span> Create New Dat
+        </button>
       </div>
       ${!items.length
         ? html`<div class="empty"><div><span class="${isViewingTrash ? 'fas fa-trash' : 'far fa-sad-tear'}"></span></div>No ${this.currentView} found.</div>`
@@ -176,8 +171,8 @@ class DatsView extends LitElement {
       <a class="item" href=${`dat://`+item.key} @contextmenu=${e => this.onContextMenuDat(e, item)}>
         <img src="asset:thumb:dat://${item.key}?cache_buster=${Date.now()}">
         <div class="details">
-          <div class="title">${item.meta.title}</div>
-          <div class="author">by ${item.author ? item.author.title : 'You'}</div>
+          <div class="title">${item.meta.title || html`<em>Untitled</em>`}</div>
+          <div class="author">by ${item.author ? item.author.title : html`<em>Unknown</em>`}</div>
           <div class="bottom-line">
             <span>${this.renderVisibility(item.visibility)}</span>
             ${item.meta.isOwner ? html`<span class="label">Owner</span>` : ''}
@@ -212,10 +207,6 @@ class DatsView extends LitElement {
     this.load()
   }
 
-  onKeyupQuery (e) {
-    this.currentQuery = e.currentTarget.value
-  }
-
   onContextMenuDat (e, item) {
     e.preventDefault()
     e.stopPropagation()
@@ -229,6 +220,12 @@ class DatsView extends LitElement {
 
     var rect = e.currentTarget.getClientRects()[0]
     this.showMenu(item, rect.right + 4, rect.bottom + 8, false)
+  }
+
+  async onClickNew () {
+    var archive = await DatArchive.create()
+    toast.create('Dat created')
+    beaker.browser.openUrl(archive.url, {setActive: true})
   }
 
   async onEmptyTrash () {

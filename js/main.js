@@ -4,11 +4,12 @@ import _debounce from '/vendor/lodash.debounce.js'
 import './com/nav.js'
 import './com/side-filters.js'
 import './com/filters.js'
-import './views/pins.js'
+import './views/launcher.js'
 import './views/bookmarks.js'
 import './views/statuses.js'
 import './views/dats.js'
 import './views/people.js'
+import './views/search.js'
 import mainCSS from '../css/main.css.js'
 
 export class LibraryApp extends LitElement {
@@ -26,8 +27,9 @@ export class LibraryApp extends LitElement {
     super()
 
     this.user = null
-    this.currentView = QP.getParam('view', 'pins')
+    this.currentView = QP.getParam('view', 'launcher')
     this.currentWritableFilter = QP.getParam('writable', '')
+    this.currentQuery = undefined
     this.items = []
 
     this.load()
@@ -60,15 +62,8 @@ export class LibraryApp extends LitElement {
         .user=${this.user}
         currentView=${this.currentView}
         @change-view=${this.onChangeView}
+        @change-query=${this.onChangeQuery}
       ></library-nav>
-      ${''/*<div id="content-header">
-        <library-filters
-          query=${this.currentQuery}
-          writable=${this.currentWritableFilter}
-          @clear-query=${this.onClearQuery}
-          @clear-writable=${this.onClearWritableFilter}
-        ></library-filters>
-        </div>*/}
       <div id="content">
         ${this.renderView()}
       </div>
@@ -77,9 +72,9 @@ export class LibraryApp extends LitElement {
 
   renderView () {
     switch (this.currentView) {
-      case 'pins':
+      case 'launcher':
         return html`
-          <pins-view the-current-view></pins-view>
+          <launcher-view the-current-view></launcher-view>
         `
       case 'bookmarks':
         return html`
@@ -104,8 +99,7 @@ export class LibraryApp extends LitElement {
             currentView=${this.currentView}
           ></people-view>
         `
-      case 'websites':
-      case 'archives':
+      case 'dats':
       case 'trash':
         return html`
           <dats-view
@@ -113,6 +107,15 @@ export class LibraryApp extends LitElement {
             .user=${this.user}
             currentView=${this.currentView}
           ></dats-view>
+        `
+      case 'search':
+        return html`
+          <search-view
+            the-current-view
+            .user=${this.user}
+            currentView=${this.currentView}
+            currentQuery=${this.currentQuery}
+          ></search-view>
         `
       default:
         return html`<div class="empty"><div><span class="fas fa-toolbox"></span></div>Under Construction</div>`
@@ -135,8 +138,16 @@ export class LibraryApp extends LitElement {
 
   onChangeView (e) {
     this.currentView = e.detail.view
-    QP.setParams({view: this.currentView})
+    QP.setParams({view: this.currentView}, true)
     this.load()
+  }
+
+  onChangeQuery (e) {
+    if (e.detail.value) {
+      this.currentQuery = e.detail.value
+      this.currentView = 'search'
+      this.load()
+    }
   }
 
   onClearType (e) {
