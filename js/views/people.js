@@ -48,11 +48,11 @@ class PeopleView extends LitElement {
     var items
     var libraryUsers = (await beaker.users.list())
       .map(u => { u.isOwner = true; return u })
-      .concat(await UwG.library.list({type: 'unwalled.garden/person'}))
-    var followedUsers = (await UwG.follows.list({author: this.user.url})).map(({topic}) => topic)
+      .concat(await uwg.library.list({type: 'unwalled.garden/person'}))
+    var followedUsers = (await uwg.follows.list({author: this.user.url})).map(({topic}) => topic)
     var networkAuthors = [this.user.url].concat(followedUsers.map(f => f.url))
     if (this.currentSubview === 'foafs') {
-      let foafUsers = (await UwG.follows.list({author: networkAuthors})).map(({topic}) => topic)
+      let foafUsers = (await uwg.follows.list({author: networkAuthors})).map(({topic}) => topic)
       items = foafUsers.filter(u => (
         !libraryUsers.find(u2 => u2.url === u.url)
         && !followedUsers.find(u2 => u2.url === u.url)
@@ -62,7 +62,7 @@ class PeopleView extends LitElement {
     }
     items = _uniqBy(items, 'url')
     await Promise.all(items.map(async (item) => {
-      item.followers = (await UwG.follows.list({topic: item.url, author: networkAuthors})).map(({author}) => author)
+      item.followers = (await uwg.follows.list({topic: item.url, author: networkAuthors})).map(({author}) => author)
       item.isLocalUser = this.user.url === item.url
       item.isLocalUserFollowing = !!item.followers.find(f => f.url === this.user.url)
     }))
@@ -163,9 +163,9 @@ class PeopleView extends LitElement {
   async onToggleFollow (e, item) {
     e.preventDefault()
     if (item.isLocalUserFollowing) {
-      await UwG.follows.remove(item.url)
+      await uwg.follows.remove(item.url)
     } else {
-      await UwG.follows.add(item.url)
+      await uwg.follows.add(item.url)
     }
     this.load()
   }

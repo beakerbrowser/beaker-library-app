@@ -37,11 +37,11 @@ class SearchStatusResult extends LitElement {
 
   async loadAnnotations () {
     console.log('loading')
-    var followedUsers = (await UwG.follows.list({author: this.user.url})).map(({topic}) => topic.url)
+    var followedUsers = (await uwg.follows.list({author: this.user.url})).map(({topic}) => topic.url)
     var feedAuthors = [this.user.url].concat(followedUsers)
     var [c, r] = await Promise.all([
-      UwG.comments.list({topic: this.item.href, author: feedAuthors}),
-      UwG.reactions.tabulate(this.item.href, {author: feedAuthors})
+      uwg.comments.list({topic: this.item.href, author: feedAuthors}),
+      uwg.reactions.tabulate(this.item.href, {author: feedAuthors})
     ])
     this.numComments = c.length
     this.reactions = r
@@ -81,11 +81,11 @@ class SearchStatusResult extends LitElement {
   // =
 
   async onAddReaction (e) {
-    await UwG.reactions.add(e.detail.topic, e.detail.phrase)
+    await uwg.reactions.add(e.detail.topic, e.detail.phrase)
   }
 
   async onDeleteReaction (e) {
-    await UwG.reactions.remove(e.detail.topic, e.detail.phrase)
+    await uwg.reactions.remove(e.detail.topic, e.detail.phrase)
   }
 
   async onDeleteStatus (e) {
@@ -93,7 +93,7 @@ class SearchStatusResult extends LitElement {
 
     // delete the status
     try {
-      await UwG.statuses.remove(status.url)
+      await uwg.statuses.remove(status.url)
     } catch (e) {
       alert('Something went wrong. Please let the Beaker team know! (An error is logged in the console.)')
       console.error('Failed to delete status')

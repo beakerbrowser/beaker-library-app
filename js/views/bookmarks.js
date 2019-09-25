@@ -43,14 +43,14 @@ class BookmarksView extends LitElement {
   async load () {
     var author = undefined
     if (this.currentSubview === 'network') {
-      author = (await UwG.follows.list({author: this.userUrl})).map(({topic}) => topic.url)
+      author = (await uwg.follows.list({author: this.userUrl})).map(({topic}) => topic.url)
     } else {
       author = [
         this.userUrl,
         (await navigator.filesystem.getRoot()).url
       ]
     }
-    var items = await UwG.bookmarks.list({
+    var items = await uwg.bookmarks.list({
       author,
       isOwner: this.currentSubview === 'mine' ? true : undefined,
       sortBy: this.currentSort,

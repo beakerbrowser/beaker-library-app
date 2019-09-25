@@ -141,7 +141,7 @@ export class AddPinPopup extends BasePopup {
   }
 
   async initialLoad () {
-    this.user = await UwG.profiles.me()
+    this.user = await uwg.profiles.me()
     await this.loadSuggestions()
   }
 

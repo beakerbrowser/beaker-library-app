@@ -58,7 +58,7 @@ class DatsView extends LitElement {
       if (this.currentSubview === 'mine') isOwner = true
       else if (this.currentSubview === 'network') isOwner = false
       if (this.currentSubview === 'network') visibility = 'public'
-      items = await UwG.library.list({isSaved, isOwner, visibility, sortBy: this.currentSort})
+      items = await uwg.library.list({isSaved, isOwner, visibility, sortBy: this.currentSort})
     }
 
     // manually filter for 'archives' view
@@ -88,20 +88,20 @@ class DatsView extends LitElement {
       items.push('-')
       if (item.isSaved) {
         items.push({icon: 'fas fa-trash', label: 'Move to trash', click: async () => {
-          await UwG.library.configure(item.key, {isSaved: false})
+          await uwg.library.configure(item.key, {isSaved: false})
           toast.create('Moved to trash')
           this.load()
         }})
       } else {
         if (item.meta.isOwner) {
           items.push({icon: 'fas fa-undo', label: 'Restore from trash', click: async () => {
-            await UwG.library.configure(item.key, {isSaved: true})
+            await uwg.library.configure(item.key, {isSaved: true})
             toast.create('Restored')
             this.load()
           }})
         } else {
           items.push({icon: 'fas fa-save', label: 'Save to library', click: async () => {
-            await UwG.library.configure(item.key, {isSaved: true})
+            await uwg.library.configure(item.key, {isSaved: true})
             toast.create('Saved')
             this.load()
           }})
