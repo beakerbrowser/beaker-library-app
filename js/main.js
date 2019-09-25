@@ -36,7 +36,9 @@ export class LibraryApp extends LitElement {
 
     window.addEventListener('focus', _debounce(() => {
       // load latest when we're opened, to make sure we stay in sync
-      this.load()
+      if (this.currentView === 'launcher') {
+        this.load()
+      }
     }, 500))
   }
 
