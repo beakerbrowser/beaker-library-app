@@ -1,5 +1,9 @@
 import { LitElement, html } from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-element.js'
 import { repeat } from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-html/directives/repeat.js'
+import { writeToClipboard } from '/vendor/beaker-app-stdlib/js/clipboard.js'
+import * as toast from '/vendor/beaker-app-stdlib/js/com/toast.js'
+import * as contextMenu from '/vendor/beaker-app-stdlib/js/com/context-menu.js'
+import { EditBookmarkPopup } from '../com/edit-bookmark-popup.js'
 import bookmarksViewCSS from '../../css/views/bookmarks.css.js'
 import * as QP from '../lib/query-params.js'
 import { oneof } from '../lib/validation.js'
@@ -96,7 +100,7 @@ class BookmarksView extends LitElement {
 
   renderItem (item) {
     return html`
-      <a class="bookmark" href=${item.href}>
+      <a class="bookmark" href=${item.href} @contextmenu=${e => this.onContextMenu(e, item)}>
         <span class="favicon"><img src="asset:favicon:${item.href}"></span>
         <span class="title">${item.title}</span>
         <span class="href">${item.href}</span>
@@ -137,6 +141,42 @@ class BookmarksView extends LitElement {
     e.preventDefault()
     e.stopPropagation()
     window.open(item.author.url)
+  }
+
+  onContextMenu (e, item) {
+    e.preventDefault()
+    e.stopPropagation()
+
+    var items = [
+      {icon: 'fas fa-fw fa-external-link-alt', label: 'Open in new tab', click: () => beaker.browser.openUrl(item.href, {setActive: true}) },
+      {icon: 'fas fa-fw fa-link', label: 'Copy URL', click: () => {
+        writeToClipboard(item.href)
+        toast.create('Copied to your clipboard')
+      }},
+      '-',
+      {icon: 'fas fa-fw fa-pencil-alt', label: 'Edit bookmark', click: async () => {
+        var values = await EditBookmarkPopup.create(item)
+        await uwg.bookmarks.edit(item.href, values)
+        this.load()
+      }},
+      {icon: 'fas fa-fw fa-trash', label: 'Delete bookmark', click: async () => {
+        if (confirm('Are you sure?')) {
+          await uwg.bookmarks.remove(item.href)
+          toast.create('Bookmark deleted')
+          this.load()
+        }
+      }}
+    ]
+  
+    contextMenu.create({
+      x: e.clientX,
+      y: e.clientY,
+      right: true,
+      noBorders: true,
+      fontAwesomeCSSUrl: '/vendor/beaker-app-stdlib/css/fontawesome.css',
+      style: `padding: 4px 0`,
+      items 
+    })
   }
 }
 customElements.define('bookmarks-view', BookmarksView)
