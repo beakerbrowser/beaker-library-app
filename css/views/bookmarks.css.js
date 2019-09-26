@@ -34,8 +34,6 @@ a:hover {
 }
 
 .listing {
-  margin: 6px 0px;
-  border-top: 1px solid #f0f0f5;
 }
 
 .bookmark {

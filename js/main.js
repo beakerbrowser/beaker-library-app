@@ -86,7 +86,7 @@ export class LibraryApp extends LitElement {
             currentView=${this.currentView}
           ></bookmarks-view>
         `
-      case 'status-updates':
+      case 'news-feed':
         return html`
           <statuses-view
             the-current-view

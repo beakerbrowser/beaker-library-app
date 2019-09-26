@@ -48,7 +48,7 @@ ${emptyCSS}
 
 .pin .favicon {
   position: absolute;
-  top: 50px;
+  top: 45px;
   left: 50%;
   transform: translateX(-50%);
   background: #fff;

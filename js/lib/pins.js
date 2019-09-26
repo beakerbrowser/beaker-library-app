@@ -27,7 +27,7 @@ export async function save (pins) {
 
 function defaults () {
   return [
-    {title: 'Social Feed', href: 'beaker://library?view=status-updates'},
+    {title: 'News Feed', href: 'beaker://library?view=news-feed'},
     {title: 'Bookmarks', href: 'beaker://library?view=bookmarks'},
     {title: 'People', href: 'beaker://library?view=people'},
     {title: 'Dat Library', href: 'beaker://library?view=dats'},

@@ -15,13 +15,7 @@ ${emptyCSS}
   margin: 0px 10px 50px 190px;
 }
 
-.header {
-  width: 570px;
-  margin: 0 auto;
-}
-
 @media (min-width: 1300px) {
-  .header,
   beaker-status-feed {
     padding-right: 180px;
   }

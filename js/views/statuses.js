@@ -39,7 +39,7 @@ class StatusesView extends LitElement {
   // =
 
   render () {
-    document.title = 'Status Feed'
+    document.title = 'News Feed'
     
     return html`
       <link rel="stylesheet" href="/vendor/beaker-app-stdlib/css/fontawesome.css">

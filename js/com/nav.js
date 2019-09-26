@@ -52,7 +52,7 @@ class LibraryNav extends LitElement {
         <i class="fa fa-search"></i>
       </div>
       ${item('launcher', 'fas fa-rocket', 'Launcher')}
-      ${item('status-updates', 'far fa-comment-alt', 'Status Feed')}
+      ${item('news-feed', 'far fa-newspaper', 'News Feed')}
       <br>
       <h5>Library</h5>
       ${item('bookmarks', 'far fa-star', 'Bookmarks')}
@@ -102,7 +102,7 @@ customElements.define('library-nav', LibraryNav)
       ${item('bookmarks', 'far fa-star', 'Bookmarks')}
       <br>
       <h5>News</h5>
-      ${item('status-updates', 'far fa-comment-alt', 'Social feed')}
+      ${item('news-feed', 'far fa-comment-alt', 'Social feed')}
       ${item('blog-posts', 'far fa-newspaper', 'Blog posts', true)}
       ${item('events', 'far fa-calendar-alt', 'Events', true)}
       <br>
