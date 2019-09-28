@@ -12,7 +12,7 @@ ${emptyCSS}
 
 :host {
   display: block;
-  margin: 0px 10px 50px 190px;
+  margin: 0px 60px 60px 190px;
 }
 
 .header {
@@ -22,7 +22,7 @@ ${emptyCSS}
 .pins {
   display: grid;
   padding: 15px;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   grid-gap: 15px;
   width: 100%;
   user-select: none;
@@ -34,32 +34,31 @@ ${emptyCSS}
   border-radius: 3px;
   color: inherit;
   border-radius: 3px;
-  border: 1px solid #ccc;
   background: #fff;
   overflow: hidden;
   user-select: none;
+  transition: background 0.3s;
+  min-height: 100px;
 }
 
 .pin:hover {
-  border-color: #bbb;
-  box-shadow: 0 2px 3px rgba(0,0,0,.05);
+  background: #f2f2f8;
   text-decoration: none;
 }
 
 .pin .favicon {
   position: absolute;
-  top: 45px;
+  top: 20px;
   left: 50%;
   transform: translateX(-50%);
-  background: #fff;
   z-index: 1;
   border-radius: 4px;
-  width: 34px;
-  height: 34px;
+  width: 28px;
+  height: 28px;
 }
 
 .pin .details {
-  padding: 120px 12px 10px;
+  padding: 60px 12px 20px;
 }
 
 .pin .details > * {
@@ -69,14 +68,18 @@ ${emptyCSS}
 }
 
 .pin .title {
-  font-size: 13px;
-  line-height: 20px;
-}
-
-.pin .href {
-  color: gray;
   font-size: 11px;
+  line-height: 20px;
+  text-align: center;
 }
 
+.pin.add span {
+  position: absolute;
+  left: 50%;
+  top: 45%;
+  transform: translate(-50%, -50%);
+  font-size: 28px;
+  color: rgba(0, 0, 0, 0.15);
+}
 `
 export default cssStr

@@ -43,17 +43,7 @@ class StatusesView extends LitElement {
     
     return html`
       <link rel="stylesheet" href="/vendor/beaker-app-stdlib/css/fontawesome.css">
-      <div class="header">
-        <subview-tabs
-          .items=${SUBVIEWS}
-          current=${this.currentSubview}
-          @change=${this.onChangeSubview}
-        ></subview-tabs>
-      </div>
-      ${this.currentSubview === 'feed' ? html`<beaker-status-feed .user=${this.user}></beaker-status-feed>` : ''}
-      ${this.currentSubview === 'notifications' ? html`
-        <div class="empty"><div><span class="fas fa-toolbox"></span></div>Under Construction</div>
-      ` : ''}
+      <beaker-status-feed .user=${this.user}></beaker-status-feed>
     `
   }
 

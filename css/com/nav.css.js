@@ -12,6 +12,7 @@ ${buttonsCSS}
   left: 0;
   height: 100%;
   width: 180px;
+  overflow-x: hidden;
   overflow-y: auto;
   padding: 10px 0 30px;
   box-sizing: border-box;
@@ -33,6 +34,7 @@ a.item {
   cursor: pointer;
   border-top-right-radius: 16px;
   border-bottom-right-radius: 16px;
+  transition: background 0.3s;
 }
 
 a.item:hover {
@@ -40,7 +42,8 @@ a.item:hover {
 }
 
 a.item.current {
-  background: #f0f0f5;
+  color: var(--blue);
+  font-weight: 500;
 }
 
 a.item.todo {
@@ -93,8 +96,8 @@ hr {
 
 input.search {
   font-size: 12px;
-  border: 1px solid #ccc;
-  background: transparent;
+  border: 0;
+  background: #f0f0f5;
   outline: 0;
   box-sizing: border-box;
   width: 172px;

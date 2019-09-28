@@ -37,7 +37,7 @@ a:hover {
 
 .listing {
   display: grid;
-  padding: 15px;
+  padding: 5px 15px;
   grid-gap: 15px 15px;
   grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
 }

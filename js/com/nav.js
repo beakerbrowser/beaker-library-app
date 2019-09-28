@@ -51,7 +51,7 @@ class LibraryNav extends LitElement {
         <input @keyup=${this.onKeyupQuery} placeholder="Search" class="search" value=${this.currentQuery} />
         <i class="fa fa-search"></i>
       </div>
-      ${item('launcher', 'fas fa-rocket', 'Launcher')}
+      ${item('launcher', 'fas fa-th', 'Launcher')}
       ${item('news-feed', 'far fa-newspaper', 'News Feed')}
       <br>
       <h5>Library</h5>

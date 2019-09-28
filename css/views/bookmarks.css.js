@@ -34,6 +34,7 @@ a:hover {
 }
 
 .listing {
+  border-top: 1px solid #f0f0f5;
 }
 
 .bookmark {

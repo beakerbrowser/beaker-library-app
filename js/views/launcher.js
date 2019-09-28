@@ -51,21 +51,7 @@ class LauncherView extends LitElement {
     }
     return html`
       <link rel="stylesheet" href="/vendor/beaker-app-stdlib/css/fontawesome.css">
-      <div class="header">
-        <subview-tabs
-          .items=${SUBVIEWS}
-          current=${this.currentSubview}
-          @change=${this.onChangeSubview}
-        ></subview-tabs>
-        <hr>
-        <button @click=${this.onClickAdd} style="margin-left: 10px">
-          <span class="fas fa-fw fa-plus"></span> Add Pin
-        </button>
-      </div>
-      ${this.currentSubview === 'pins' ? this.renderPins() : undefined}
-      ${this.currentSubview === 'whats-new' ? html`
-        <div class="empty"><div><span class="fas fa-toolbox"></span></div>Under Construction</div>
-      ` : ''}
+      ${this.renderPins()}
     `
   }
 
@@ -88,18 +74,15 @@ class LauncherView extends LitElement {
             </div>
           </a>
         `)}
+        <a class="pin add" @click=${this.onClickAdd}>
+          <span class="fas fa-fw fa-plus"></span>
+        </a>
       </div>
     `
   }
 
   // events
   // =
-
-  onChangeSubview (e) {
-    this.currentSubview = e.detail.id
-    QP.setParams({subview: this.currentSubview})
-    this.load()
-  }
 
   async onClickAdd () {
     try {

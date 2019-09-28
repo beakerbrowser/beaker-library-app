@@ -111,7 +111,7 @@ class BookmarksView extends LitElement {
         </span>
         ${item.visibility === 'public' ? html`
           <span
-            class="author"
+            class="author tooltip-left"
             data-tooltip=${item.author.title || 'Anonymous'}
             @click=${e => this.onClickAuthor(e, item)}
           >
