@@ -26,7 +26,8 @@ export class LibraryApp extends LitElement {
   constructor () {
     super()
 
-    this.user = null
+    this.user = undefined
+    this.fs = undefined
     this.currentView = QP.getParam('view', 'launcher')
     this.currentWritableFilter = QP.getParam('writable', '')
     this.currentQuery = undefined
@@ -46,6 +47,9 @@ export class LibraryApp extends LitElement {
     if (!this.user) {
       this.user = await beaker.users.getCurrent()
     }
+    if (!this.fs) {
+      this.fs = await navigator.filesystem.get()
+    }
     await this.requestUpdate()
     try {
       await this.shadowRoot.querySelector('[the-current-view]').load()
@@ -62,6 +66,7 @@ export class LibraryApp extends LitElement {
       <link rel="stylesheet" href="/vendor/beaker-app-stdlib/css/fontawesome.css">
       <library-nav
         .user=${this.user}
+        .fs=${this.fs}
         currentView=${this.currentView}
         @change-view=${this.onChangeView}
         @change-query=${this.onChangeQuery}

@@ -7,7 +7,6 @@ const cssStr = css`
   height: 26px;
   padding: 10px 0;
   user-select: none;
-
 }
 
 .header button {

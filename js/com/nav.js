@@ -60,12 +60,15 @@ class LibraryNav extends LitElement {
       <br>
       <h5>Network</h5>
       ${item('people', libTools.getFAIcon('people'), 'People')}
-      <br>
-      <h5>System</h5>
-      <a class="item" href=${this.user ? this.user.url : ''} target="_blank">
+      <a class="item" href=${this.user ? this.user.url : ''}>
         <img class="avatar" src="asset:thumb:${this.user ? this.user.url : ''}?cache_buster=${Date.now()}">
         <span class="label">${this.user ? this.user.title : ''}</span>
-        <span class="fas fa-fw fa-external-link-alt"></span>
+      </a>
+      <br>
+      <h5>System</h5>
+      <a class="item" href=${this.fs ? this.fs.url : ''}>
+        <span class="fa-fw far fa-hdd"></span>
+        <span class="label">Filesystem</span>
       </a>
       ${item('cloud-peers', 'fas fa-cloud', 'Cloud Peers', true)}
       ${item('settings', 'fas fa-cog', 'Settings', true)}
