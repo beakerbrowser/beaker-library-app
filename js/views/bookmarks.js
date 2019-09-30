@@ -51,7 +51,7 @@ class BookmarksView extends LitElement {
     } else {
       author = [
         this.userUrl,
-        (await navigator.filesystem.getRoot()).url
+        (await navigator.filesystem.get()).url
       ]
     }
     var items = await uwg.bookmarks.list({

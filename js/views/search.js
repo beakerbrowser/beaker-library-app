@@ -50,7 +50,7 @@ class SearchView extends LitElement {
 
   async runQuery () {
     if (!this.fs) {
-      this.fs = await navigator.filesystem.getRoot()
+      this.fs = await navigator.filesystem.get()
     }
 
     var res = await beaker.search.query({

@@ -1,7 +1,7 @@
 
 
 export async function load () {
-  var fs = await navigator.filesystem.getRoot()
+  var fs = await navigator.filesystem.get()
   try {
     var str = await fs.readFile('/.data/beakerbrowser.com/pins.json')
     var obj = JSON.parse(str)
@@ -13,7 +13,7 @@ export async function load () {
 }
 
 export async function save (pins) {
-  var fs = await navigator.filesystem.getRoot()
+  var fs = await navigator.filesystem.get()
   await fs.mkdir('/.data').catch(err => null)
   await fs.mkdir('/.data/beakerbrowser.com').catch(err => null)
   await fs.writeFile('/.data/beakerbrowser.com/pins.json', JSON.stringify({
